@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "328575517881",
+    "project_id": "unilink-fe270",
+    "storage_bucket": "unilink-fe270.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328575517881:android:0f9db7c1fd358c1e220768",
+        "android_client_info": {
+          "package_name": "com.marcosdeuna.unilink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIB2Jh38D-XPrZEjgy4O403kkfY_PI41Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

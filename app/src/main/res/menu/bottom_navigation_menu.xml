@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item
+            android:id="@+id/navigation_home"
+            android:icon="@drawable/ic_home"
+            android:title="Inicio"/>
+        <item
+            android:id="@+id/navigation_discover_people"
+            android:icon="@drawable/ic_discover_people"
+            android:title="Descubrir"/>
+        <item
+            android:id="@+id/navigation_create_post"
+            android:icon="@drawable/ic_add_circle"
+            android:title="Crear"/>
+        <item
+            android:id="@+id/navigation_discover_places"
+            android:icon="@drawable/ic_discover_places"
+            android:title="Lugares"/>
+        <item
+            android:id="@+id/navigation_chats"
+            android:icon="@drawable/ic_chat"
+            android:title="Chats"/>
+</menu>
