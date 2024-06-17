@@ -7,8 +7,8 @@ import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.marcosdeuna.unilink.data.repository.AuthRepository
 import com.marcosdeuna.unilink.data.repository.AuthRepositoryImpl
-import com.marcosdeuna.unilink.data.repository.NoteRepository
-import com.marcosdeuna.unilink.data.repository.NoteRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.PostRepository
+import com.marcosdeuna.unilink.data.repository.PostRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +20,8 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun provideNoteRepository(database: FirebaseFirestore, storageReference: StorageReference): NoteRepository {
-        return NoteRepositoryImpl(database, storageReference)
+    fun providePostRepository(database: FirebaseFirestore, storageReference: StorageReference): PostRepository {
+        return PostRepositoryImpl(database, storageReference)
     }
 
     @Provides
@@ -29,4 +29,5 @@ object RepositoryModule {
     fun provideAuthRepository(database: FirebaseFirestore, storageReference: StorageReference, auth: FirebaseAuth, appPreferences: SharedPreferences, gson: Gson): AuthRepository {
         return AuthRepositoryImpl(database, storageReference,  auth, appPreferences, gson)
     }
+
 }

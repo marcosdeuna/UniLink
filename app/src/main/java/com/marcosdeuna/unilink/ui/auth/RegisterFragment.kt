@@ -76,7 +76,8 @@ class RegisterFragment : Fragment() {
                                 toast("Error uploading profile picture: ${uploadState.exception}")
                             }
                             UIState.Loading -> {
-                                // Puedes mostrar un indicador de carga si lo deseas
+                                binding.buttonRegister.text = ""
+                                binding.progressBar.show()
                             }
 
                             UIState.Empty -> TODO()

@@ -68,4 +68,8 @@ class AuthViewModel @Inject constructor( val repository: AuthRepository) : ViewM
             repository.uploadProfilePicture(imageUri, result)
         }
     }
+
+    fun getUserById(userId: String, result: (User?) -> Unit){
+        repository.getUserById(userId, result)
+    }
 }

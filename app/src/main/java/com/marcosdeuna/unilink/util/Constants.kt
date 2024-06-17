@@ -3,7 +3,7 @@ package com.marcosdeuna.unilink.util
 import android.provider.ContactsContract.Profile
 
 object FirestoreCollection {
-    val NOTE = "note"
+    val POST = "posts"
     val USER = "users"
 }
 
@@ -20,5 +20,6 @@ object FirestoreCollectionField {
 object FirebaseStorageConstant {
     val ROOT_DIRECTORY = "app"
     val PROFILE_IMAGE = "profile_image"
+    val POST_IMAGE = "post_image"
 }
 

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/rojo_claro"
+    tools:context=".ui.post.CreatePostFragment">
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_arrow"
+        android:contentDescription="Volver"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/rojo1" />
+
+    <!-- Título de la página -->
+        <TextView
+        android:id="@+id/text_page_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear Nuevo Post"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="100dp"/>
+
+    <!-- Campo Título -->
+        <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Título:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_page_title"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+        <EditText
+        android:id="@+id/edit_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese el título del post"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/white"
+        app:layout_constraintStart_toEndOf="@+id/text_title"
+        app:layout_constraintTop_toTopOf="@+id/text_title"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:autofillHints="" />
+
+    <!-- Campo Categoría -->
+        <TextView
+        android:id="@+id/text_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Categoría:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_title"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+        <Spinner
+        android:id="@+id/spinner_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+            android:hint="Seleccione una categoría"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_category"
+        app:layout_constraintTop_toTopOf="@+id/text_category"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"/>
+
+    <!-- Campo Descripción -->
+        <TextView
+        android:id="@+id/text_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descripción:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_category"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+        <EditText
+        android:id="@+id/edit_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese la descripción del post"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:textColor="@color/black"
+            android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_description"
+        app:layout_constraintTop_toTopOf="@+id/text_description"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"/>
+
+    <LinearLayout
+        android:id="@+id/image_preview_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_description"
+        android:layout_marginTop="20dp">
+    </LinearLayout>
+
+    <!-- Botón Agregar Imágenes -->
+    <Button
+    android:id="@+id/button_add_images"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Agregar Imágenes"
+    android:textColor="@color/white"
+    android:backgroundTint="@color/rojo1"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/image_preview_container"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"/>
+
+    <!-- Botón Eliminar Imágenes -->
+    <Button
+    android:id="@+id/button_delete_images"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Eliminar Imágenes"
+    android:textColor="@color/white"
+    android:backgroundTint="@color/rojo1"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/image_preview_container"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    android:visibility="gone"/>
+
+    <!-- Botón Publicar -->
+
+    <RelativeLayout
+        android:id="@+id/button_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_add_images">
+
+        <ProgressBar
+            android:id="@+id/create_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="28dp"
+            android:elevation="10dp"
+            android:indeterminateTint="@color/white"
+            android:visibility="invisible" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_submit"
+            android:layout_width="370dp"
+            android:layout_height="45dp"
+            android:text="Publicar"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/rojo1"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="40dp"/>
+    </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

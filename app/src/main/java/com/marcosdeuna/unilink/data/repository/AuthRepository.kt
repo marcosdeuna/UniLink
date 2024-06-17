@@ -17,5 +17,7 @@ interface AuthRepository {
 
     fun getUserSession(result: (User?) -> Unit)
 
+    fun getUserById(id: String, result: (User?) -> Unit)
+
     suspend fun uploadProfilePicture(imageUri: Uri, result: (UIState<String>) -> Unit)
 }

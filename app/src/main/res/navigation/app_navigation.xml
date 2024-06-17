@@ -6,16 +6,6 @@
     app:startDestination="@id/splashFragment">
 
     <fragment
-        android:id="@+id/noteListeningFragment"
-        android:name="com.marcosdeuna.unilink.ui.note.NoteListeningFragment"
-        android:label="fragment_note_listening"
-        tools:layout="@layout/fragment_note_listening" />
-    <fragment
-        android:id="@+id/noteDetailFragment"
-        android:name="com.marcosdeuna.unilink.ui.note.NoteDetailFragment"
-        android:label="fragment_note_detail"
-        tools:layout="@layout/fragment_note_detail" />
-    <fragment
         android:id="@+id/onboardingFragment"
         android:name="com.marcosdeuna.unilink.ui.onboarding.OnboardingFragment"
         android:label="fragment_onboarding"
@@ -84,14 +74,52 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.marcosdeuna.unilink.ui.post.PostFragment"
+        android:name="com.marcosdeuna.unilink.ui.post.ListPostFragment"
         android:label="fragment_post"
-        tools:layout="@layout/fragment_post" >
+        tools:layout="@layout/fragment_list_post" >
         <action
             android:id="@+id/action_postFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:popUpTo="@id/postFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_postFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_detailPostFragment"
+            app:destination="@id/detailPostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_detailUserFragment"
+            app:destination="@id/detailUserFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.marcosdeuna.unilink.ui.post.CreatePostFragment"
+        android:label="fragment_create_post"
+        tools:layout="@layout/fragment_create_post" >
+        <action
+            android:id="@+id/action_createPostFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailPostFragment"
+        android:name="com.marcosdeuna.unilink.ui.post.DetailPostFragment"
+        android:label="DetailPostFragment" >
+        <action
+            android:id="@+id/action_detailPostFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_detailPostFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailUserFragment"
+        android:name="com.marcosdeuna.unilink.ui.auth.DetailUserFragment"
+        android:label="fragment_detail_user"
+        tools:layout="@layout/fragment_detail_user" >
+        <action
+            android:id="@+id/action_detailUserFragment_to_postFragment"
+            app:destination="@id/postFragment" />
     </fragment>
 
 </navigation>

@@ -1,0 +1,24 @@
+package com.marcosdeuna.unilink.ui.auth
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.marcosdeuna.unilink.R
+import com.marcosdeuna.unilink.databinding.FragmentDetailUserBinding
+
+class DetailUserFragment : Fragment() {
+
+    private lateinit var binding: FragmentDetailUserBinding
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        binding = FragmentDetailUserBinding.inflate(layoutInflater)
+        return binding.root
+    }
+}

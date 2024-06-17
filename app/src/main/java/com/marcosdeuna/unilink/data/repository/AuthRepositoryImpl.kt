@@ -144,6 +144,20 @@ class AuthRepositoryImpl(
         }
     }
 
+    override fun getUserById(id: String, result: (User?) -> Unit) {
+        val document = database.collection(FirestoreCollection.USER).document(id)
+        document.get()
+            .addOnCompleteListener(){
+                if (it.isSuccessful){
+                    val user = it.result?.toObject(User::class.java)
+                    result.invoke(user)
+                }
+            }
+            .addOnFailureListener(){
+                result.invoke(null)
+            }
+    }
+
     override suspend fun uploadProfilePicture(imageUri: Uri, result: (UIState<String>) -> Unit) {
         try{
             val uri: Uri = withContext(Dispatchers.IO){
