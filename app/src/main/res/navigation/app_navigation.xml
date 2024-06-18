@@ -120,6 +120,20 @@
         <action
             android:id="@+id/action_detailUserFragment_to_postFragment"
             app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_detailUserFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
+        <action
+            android:id="@+id/action_detailUserFragment_to_detailPostFragment"
+            app:destination="@id/detailPostFragment" />
+        <action
+            android:id="@+id/action_detailUserFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="com.marcosdeuna.unilink.ui.auth.EditUserFragment"
+        android:label="fragment_edit_user"
+        tools:layout="@layout/fragment_edit_user" />
 
 </navigation>

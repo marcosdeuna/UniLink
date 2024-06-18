@@ -72,7 +72,8 @@ class DetailPostFragment : Fragment() {
 
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_detailPostFragment_to_postFragment)
+            //volver a la pantalla anterior de la pila
+            findNavController().popBackStack()
         }
 
         binding.buttonEditPost.setOnClickListener {

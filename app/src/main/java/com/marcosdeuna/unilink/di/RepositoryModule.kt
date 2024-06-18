@@ -9,6 +9,8 @@ import com.marcosdeuna.unilink.data.repository.AuthRepository
 import com.marcosdeuna.unilink.data.repository.AuthRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.PostRepository
 import com.marcosdeuna.unilink.data.repository.PostRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.UserRepository
+import com.marcosdeuna.unilink.data.repository.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +32,9 @@ object RepositoryModule {
         return AuthRepositoryImpl(database, storageReference,  auth, appPreferences, gson)
     }
 
+    @Provides
+    @Singleton
+    fun provideUserRepository(database: FirebaseFirestore, appPreferences: SharedPreferences, gson: Gson): UserRepository {
+        return UserRepositoryImpl(database, appPreferences, gson)
+    }
 }

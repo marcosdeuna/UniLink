@@ -72,4 +72,6 @@ class AuthViewModel @Inject constructor( val repository: AuthRepository) : ViewM
     fun getUserById(userId: String, result: (User?) -> Unit){
         repository.getUserById(userId, result)
     }
+
+
 }

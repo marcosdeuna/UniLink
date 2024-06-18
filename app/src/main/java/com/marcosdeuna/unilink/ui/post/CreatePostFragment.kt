@@ -61,7 +61,7 @@ class CreatePostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_createPostFragment_to_postFragment)
+            findNavController().popBackStack()
         }
 
         val categories = arrayOf("Categoría 1", "Categoría 2", "Categoría 3")

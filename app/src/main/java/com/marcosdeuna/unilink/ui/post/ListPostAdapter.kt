@@ -30,6 +30,7 @@ class ListPostAdapter (
 
     private val posts = mutableListOf<Post>()
     private var originalList = mutableListOf<Post>()
+    private var imagenCache = mutableMapOf<String, Bitmap>()
 
     fun setPosts(posts: List<Post>) {
         this.posts.clear()
@@ -67,6 +68,18 @@ class ListPostAdapter (
         }
     }
 
+    fun filterPostByUser(user: String) {
+        if (user.isEmpty()) {
+            posts.clear()
+            posts.addAll(originalList)
+            notifyDataSetChanged()
+        } else {
+            posts.clear()
+            posts.addAll(originalList.filter { it.userId.contains(user, ignoreCase = true) })
+            notifyDataSetChanged()
+        }
+    }
+
     fun filterPostByCategory(category: String) {
         if (category.isEmpty()) {
             posts.clear()
@@ -88,10 +101,9 @@ class ListPostAdapter (
     }
 
     inner class PostViewHolder(val binding: ItemNoteLayoutBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item : Post) {
+        fun bind(item: Post) {
             binding.postTitle.setText(item.title)
             binding.postCategory.setText(item.category)
-            //si la descripción es mayor que dos líneas, se muestran puntos suspensivos
             if (binding.postDescription.lineCount > 2) {
                 binding.postDescription.maxLines = 2
                 binding.postDescription.ellipsize = android.text.TextUtils.TruncateAt.END
@@ -104,7 +116,7 @@ class ListPostAdapter (
                         binding.editPost.show()
                         binding.deletePost.show()
                         binding.sendMessage.visibility = android.view.View.GONE
-                    }else{
+                    } else {
                         binding.editPost.hide()
                         binding.deletePost.hide()
                         binding.sendMessage.show()
@@ -112,7 +124,7 @@ class ListPostAdapter (
                 }
             }
             binding.postTimestamp.setText(item.timestamp?.let { dateFormatted(it) })
-            if(item.images.isEmpty()) {
+            if (item.images.isEmpty()) {
                 binding.postImagesContainer.visibility = android.view.View.GONE
             } else {
                 binding.postImagesContainer.visibility = android.view.View.VISIBLE
@@ -129,16 +141,19 @@ class ListPostAdapter (
             }
         }
 
-
         private fun loadImages(imageUrls: List<String>) {
+
             binding.postImagesContainer.removeAllViews()
 
             for (imageUrl in imageUrls) {
                 coroutineScope.launch {
-                    val bitmap = downloadImage(imageUrl)
+                    val bitmap = imagenCache[imageUrl] ?: downloadImage(imageUrl)
                     bitmap?.let {
+                        imagenCache[imageUrl] = it
                         val imageView = createImageView(it)
-                        binding.postImagesContainer.addView(imageView)
+                        withContext(Dispatchers.Main) {
+                            binding.postImagesContainer.addView(imageView)
+                        }
                     }
                 }
             }
@@ -153,9 +168,10 @@ class ListPostAdapter (
             layoutParams.marginEnd = 8.dpToPx()
             imageView.layoutParams = layoutParams
             imageView.setImageBitmap(bitmap)
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.scaleType = ImageView.ScaleType.CENTER
             return imageView
         }
+
         fun dateFormatted(date: Date): String {
             val now = Date()
             val diffInMillis = now.time - date.time
@@ -193,7 +209,5 @@ class ListPostAdapter (
         }
 
         private fun Int.dpToPx(): Int = (this * binding.root.context.resources.displayMetrics.density).toInt()
-
-
     }
 }

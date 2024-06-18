@@ -75,6 +75,7 @@ class ListPostFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.profileModal.visibility = View.GONE
         binding.recyclerViewPosts.adapter = adapter
         postViewModel.getPosts()
         postViewModel.posts.observe(viewLifecycleOwner) { state ->
@@ -176,7 +177,7 @@ class ListPostFragment : Fragment() {
             findNavController().navigate(R.id.action_postFragment_to_loginFragment)
         }
 
-        binding.editProfileButton.setOnClickListener {
+        binding.seeProfileButton.setOnClickListener {
             findNavController().navigate(R.id.action_postFragment_to_detailUserFragment)
         }
 

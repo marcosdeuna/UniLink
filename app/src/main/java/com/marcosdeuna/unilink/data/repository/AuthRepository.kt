@@ -15,6 +15,7 @@ interface AuthRepository {
 
     fun storeSessioon(id: String, result: (User?) -> Unit)
 
+
     fun getUserSession(result: (User?) -> Unit)
 
     fun getUserById(id: String, result: (User?) -> Unit)
