@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.data.repository.UserRepository
 import com.marcosdeuna.unilink.util.UIState
@@ -38,6 +40,31 @@ class UserViewModel @Inject constructor( val repository: UserRepository): ViewMo
     private val _users = MutableLiveData<UIState<List<User>>>()
     val users: MutableLiveData<UIState<List<User>>>
         get() = _users
+
+    private var usersListener: ListenerRegistration? = null
+
+    fun observeUsers() {
+        usersListener = FirebaseFirestore.getInstance()
+            .collection("users")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    _users.postValue(e.message?.let { UIState.Error(it) })
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val userList = snapshot.documents.mapNotNull { it.toObject(User::class.java) }
+                    _users.postValue(UIState.Success(userList))
+                } else {
+                    _users.postValue(UIState.Empty)
+                }
+            }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        usersListener?.remove()
+    }
 
     fun getUsers(){
         _users.postValue(UIState.Loading)

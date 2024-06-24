@@ -9,6 +9,8 @@ import com.marcosdeuna.unilink.data.repository.AuthRepository
 import com.marcosdeuna.unilink.data.repository.AuthRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.GroupRepository
 import com.marcosdeuna.unilink.data.repository.GroupRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.MessageRepository
+import com.marcosdeuna.unilink.data.repository.MessageRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.PostRepository
 import com.marcosdeuna.unilink.data.repository.PostRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.UserRepository
@@ -44,5 +46,11 @@ object RepositoryModule {
     @Singleton
     fun provideGroupRepository(database: FirebaseFirestore, appPreferences: SharedPreferences, storageReference: StorageReference, gson: Gson): GroupRepository {
         return GroupRepositoryImpl(database, storageReference)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageRepository(database: FirebaseFirestore): MessageRepository {
+        return MessageRepositoryImpl(database)
     }
 }

@@ -12,5 +12,6 @@ data class User (
     val socialPictures: List<String> = emptyList(),
     val description: String = "",
     val genre: String = "",
-    val age: Int = 0
+    val age: Int = 0,
+    val status: String = "offline",
 )

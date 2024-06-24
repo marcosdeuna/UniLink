@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import android.content.Context
 import android.widget.ImageView
 import com.marcosdeuna.unilink.data.model.Group
+import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.DialogUserDetailsBinding
 import com.marcosdeuna.unilink.databinding.ItemUserLayoutBinding
@@ -21,7 +22,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 
-class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val authViewModel: AuthViewModel) : RecyclerView.Adapter<DiscoverGroupAdapter.DiscoverGroupViewHolder>() {
+class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val authViewModel: AuthViewModel, val onSendClicked: (Int, User) -> Unit, val onItemClicked: (Int, User) -> Unit,
+) : RecyclerView.Adapter<DiscoverGroupAdapter.DiscoverGroupViewHolder>() {
 
     inner class DiscoverGroupViewHolder(val binding: ItemUserLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -48,6 +50,14 @@ class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val
         for (imageUrl in currentGroup.images) {
             val imageView = createImageView(imageUrl)
             holder.binding.viewFlipperImages.addView(imageView)
+        }
+
+        holder.binding.chat.setOnClickListener {
+            authViewModel.getUserById(currentGroup.admin) { user ->
+                user?.let {
+                    onSendClicked(position, it)
+                }
+            }
         }
 
         // Start flipping images
@@ -114,7 +124,10 @@ class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val
                 // Check if all members are loaded
                 if (loadedMemberCount == group.members.size) {
                     // All members are loaded, set up RecyclerView adapter
-                    dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, arrayListOf(), false)
+                    dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, arrayListOf(), false, onItemClicked = { position, user ->
+                        onItemClicked(position, user)
+                        dialogBinding.closeButton.performClick()
+                    })
 
                     // Show the dialog only when all data is ready
                     val dialog = AlertDialog.Builder(context)

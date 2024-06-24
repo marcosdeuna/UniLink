@@ -62,6 +62,13 @@ class ListPostFragment : Fragment() {
                 // Acción al hacer clic en eliminar
                 postViewModel.deletePost(post)
             },
+            onSendClicked = { position, post ->
+                // Acción al hacer clic en enviar
+                findNavController().navigate(R.id.action_postFragment_to_messageFragment, Bundle().apply {
+                    putString("receiverId", post.userId)
+                    putParcelable("post", post)
+                })
+            },
             authViewModel = authViewModel,
             coroutineScope = coroutineScope
         )
@@ -189,7 +196,7 @@ class ListPostFragment : Fragment() {
     }
 
     private fun setUpSpinner() {
-        val categories = arrayOf("Filtra por categoría", "Categoría 1", "Categoría 2", "Categoría 3")
+        val categories = arrayOf("Filtra por categoría", "Búsqueda de piso", "Asuntos académicos", "Eventos deportivos", "Eventos de ocio", "Actualidad en SdC", "Variado" )
         val Categoryadapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         Categoryadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCategory.adapter = Categoryadapter
@@ -273,10 +280,15 @@ class ListPostFragment : Fragment() {
                 }
                 R.id.navigation_chats -> {
                     // Acción para chats
+                    findNavController().navigate(R.id.action_postFragment_to_chatsFragment)
                     true
                 }
                 else -> false
             }
+        }
+
+        binding.cancelButton.setOnClickListener {
+            binding.sortModal.visibility = View.GONE
         }
     }
 
@@ -321,4 +333,20 @@ class ListPostFragment : Fragment() {
             return@withContext null
         }
     }
+    private fun status(status: String) {
+        authViewModel.getUserSession { user ->
+            user?.let { userViewModel.updateUserInfo(it.copy(status = status)) }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        status("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        status("offline")
+    }
+
 }

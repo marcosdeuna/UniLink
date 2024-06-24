@@ -32,6 +32,7 @@ class DetailUserFragment : Fragment() {
     private lateinit var binding: FragmentDetailUserBinding
     private val authViewModel: AuthViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val adapter by lazy {
         ListPostAdapter(
@@ -51,6 +52,10 @@ class DetailUserFragment : Fragment() {
             onDeleteClicked = { position, post ->
                 // Acción al hacer clic en eliminar
                 postViewModel.deletePost(post)
+            },
+            onSendClicked = { position, post ->
+                // Acción al hacer clic en enviar
+
             },
             authViewModel = authViewModel,
             coroutineScope = coroutineScope
@@ -159,5 +164,21 @@ class DetailUserFragment : Fragment() {
             e.printStackTrace()
             return@withContext null
         }
+    }
+
+    private fun status(status: String) {
+        authViewModel.getUserSession { user ->
+            user?.let { userViewModel.updateUserInfo(it.copy(status = status)) }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        status("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        status("offline")
     }
 }

@@ -16,6 +16,7 @@ import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.databinding.FragmentDetailPostBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
+import com.marcosdeuna.unilink.ui.user.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ class DetailPostFragment : Fragment() {
     private lateinit var binding: FragmentDetailPostBinding
     private val postViewModel: PostViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -149,6 +151,21 @@ class DetailPostFragment : Fragment() {
 
     private fun Int.dpToPx(): Int = (this * binding.root.context.resources.displayMetrics.density).toInt()
 
+    private fun status(status: String) {
+        authViewModel.getUserSession { user ->
+            user?.let { userViewModel.updateUserInfo(it.copy(status = status)) }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        status("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        status("offline")
+    }
 
 
 }

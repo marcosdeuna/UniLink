@@ -345,4 +345,20 @@ class EditUserFragment : Fragment() {
             }
         }
     }
+
+    private fun status(status: String) {
+        authViewModel.getUserSession { user ->
+            user?.let { userViewModel.updateUserInfo(it.copy(status = status)) }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        status("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        status("offline")
+    }
 }

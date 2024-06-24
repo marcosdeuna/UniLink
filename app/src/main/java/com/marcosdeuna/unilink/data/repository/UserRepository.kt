@@ -17,4 +17,5 @@ interface UserRepository {
 
     suspend fun uploadSocialPicture(imageUri: Uri, result: (UIState<String>) -> Unit)
 
+
 }

@@ -9,11 +9,12 @@ import com.bumptech.glide.Glide
 import android.content.Context
 import android.widget.ImageView
 import com.marcosdeuna.unilink.data.model.Group
+import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.databinding.ItemUserLayoutBinding
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.DialogUserDetailsBinding
 
-class DiscoverPeopleAdapter(val context: Context, val list: ArrayList<User>): RecyclerView.Adapter<DiscoverPeopleAdapter.DiscoverPeopleViewHolder>() {
+class DiscoverPeopleAdapter(val context: Context, val list: ArrayList<User>, val onSendClicked: (Int, User) -> Unit): RecyclerView.Adapter<DiscoverPeopleAdapter.DiscoverPeopleViewHolder>() {
 
     inner class DiscoverPeopleViewHolder (val binding: ItemUserLayoutBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -42,6 +43,10 @@ class DiscoverPeopleAdapter(val context: Context, val list: ArrayList<User>): Re
         for (imageUrl in currentUser.socialPictures) {
             val imageView = createImageView(imageUrl)
             holder.binding.viewFlipperImages.addView(imageView)
+        }
+
+        holder.binding.chat.setOnClickListener {
+            onSendClicked(position, currentUser)
         }
 
         // Start flipping images

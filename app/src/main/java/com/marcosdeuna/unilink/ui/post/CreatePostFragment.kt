@@ -23,6 +23,7 @@ import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.FragmentCreatePostBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import com.marcosdeuna.unilink.ui.auth.RegisterFragment
+import com.marcosdeuna.unilink.ui.user.UserViewModel
 import com.marcosdeuna.unilink.util.UIState
 import com.marcosdeuna.unilink.util.hide
 import com.marcosdeuna.unilink.util.show
@@ -43,6 +44,7 @@ class CreatePostFragment : Fragment() {
     lateinit var binding: FragmentCreatePostBinding
     val postViewModel: PostViewModel by viewModels()
     val authViewModel: AuthViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val selectedImagesUris = mutableListOf<Uri>()
     private var operation: String = ""
@@ -64,7 +66,7 @@ class CreatePostFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        val categories = arrayOf("Seleccionar categoría", "Categoría 1", "Categoría 2", "Categoría 3")
+        val categories = arrayOf("Seleccionar categoría", "Búsqueda de piso", "Asuntos académicos", "Eventos deportivos", "Eventos de ocio", "Actualidad en SdC", "Variado" )
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCategory.adapter = adapter
@@ -390,5 +392,23 @@ class CreatePostFragment : Fragment() {
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
+    }
+
+    private fun status(status: String) {
+        authViewModel.getUserSession { user ->
+            user?.let {
+                userViewModel.updateUserInfo(it.copy(status = status))
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        status("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        status("offline")
     }
 }

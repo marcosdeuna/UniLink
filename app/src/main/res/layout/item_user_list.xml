@@ -4,19 +4,44 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
+    style="@style/CustomEditTextStyle"
     android:padding="8dp">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/profile_picture"
+    <FrameLayout
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="Profile Image"
-        android:outlineSpotShadowColor="@color/black"
-        android:scaleType="centerCrop"
-        android:src="@drawable/profile_placeholder"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.Circle"
-        android:padding="8dp" />
+        android:layout_marginStart="16dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Profile Image"
+            android:outlineSpotShadowColor="@color/black"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_placeholder"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.Circle"
+            android:padding="8dp" />
+
+        <View
+            android:id="@+id/online_status"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="4dp"
+            android:visibility="gone"
+            android:background="@drawable/online_status_circle" />
+
+        <View
+            android:id="@+id/offline_status"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="4dp"
+            android:visibility="gone"
+            android:background="@drawable/offline_status_circle" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/user_full_name"

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/show_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_right"
+            android:layout_alignParentEnd="true"
+            android:padding="8dp"
+            android:text="Hello"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <!-- Time label -->
+        <TextView
+            android:id="@+id/time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/show_message"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:text="10:00"
+            android:textColor="@color/gray"
+            android:textSize="12sp" />
+
+        <!-- Seen indicator -->
+        <ImageView
+            android:id="@+id/seen_indicator"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_below="@id/show_message"
+            android:layout_toLeftOf="@id/time_label"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_seen"
+            android:visibility="gone" />
+
+        <!-- send indicator -->
+        <ImageView
+            android:id="@+id/send_indicator"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_below="@id/show_message"
+            android:layout_toLeftOf="@id/time_label"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_check"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

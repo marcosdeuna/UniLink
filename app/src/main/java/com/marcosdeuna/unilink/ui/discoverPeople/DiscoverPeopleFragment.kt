@@ -81,6 +81,13 @@ class DiscoverPeopleFragment : Fragment() {
                 // Acción al hacer clic en eliminar
                 postViewModel.deletePost(post)
             },
+            onSendClicked = { position, post ->
+                // Acción al hacer clic en enviar
+                findNavController().navigate(R.id.action_postFragment_to_messageFragment, Bundle().apply {
+                    putString("receiverId", post.userId)
+                    putParcelable("post", post)
+                })
+            },
             authViewModel = authViewModel,
             coroutineScope = coroutineScope
         )
@@ -168,17 +175,25 @@ class DiscoverPeopleFragment : Fragment() {
                     manager.setDirections(Direction.HORIZONTAL)
                     binding.cardStackView.layoutManager = manager
                     binding.cardStackView.itemAnimator = DefaultItemAnimator()
-                    binding.cardStackView.adapter = DiscoverPeopleAdapter(requireContext(), list)
+                    binding.cardStackView.adapter = DiscoverPeopleAdapter(requireContext(), list, onSendClicked = { position, user ->
+                        findNavController().navigate(R.id.action_discoverPeopleFragment_to_messageFragment, Bundle().apply {
+                            putString("receiverId", user.id)
+                        })
+                    })
                     if(list.isEmpty()){
                         binding.noUsers.visibility = View.VISIBLE
+                        binding.refresh.visibility = View.VISIBLE
                     }else{
                         binding.noUsers.visibility = View.GONE
+                        binding.refresh.visibility = View.GONE
                     }
                     binding.recyclerViewUsers.adapter = UserListAdapter(
                         requireContext(),
                         list,
                         selectedUsers,
-                        true
+                        true,
+                        onItemClicked = { _, _ ->
+                        }
                     )
                 }
                 is UIState.Error -> {
@@ -211,6 +226,7 @@ class DiscoverPeopleFragment : Fragment() {
                 }
                 R.id.navigation_chats -> {
                     // Acción para chats
+                    findNavController().navigate(R.id.action_discoverPeopleFragment_to_chatsFragment)
                     true
                 }
                 else -> false
@@ -261,7 +277,15 @@ class DiscoverPeopleFragment : Fragment() {
                     completename.toLowerCase(Locale.ROOT).contains(search.toLowerCase(Locale.ROOT), ignoreCase = true)
                 }
                 binding.cardStackView.adapter = DiscoverPeopleAdapter(requireContext(),
-                    filteredList as ArrayList<User>
+                    filteredList as ArrayList<User>,
+                    onSendClicked = { position, user ->
+                        findNavController().navigate(
+                            R.id.action_discoverPeopleFragment_to_messageFragment,
+                            Bundle().apply {
+                                putString("receiverId", user.id)
+                            }
+                        )
+                    }
                 )
                 if(filteredList.isEmpty()){
                     binding.refresh.visibility = View.VISIBLE
@@ -272,7 +296,14 @@ class DiscoverPeopleFragment : Fragment() {
                     list = filteredList as ArrayList<User>
                 }
             } else {
-                binding.cardStackView.adapter = DiscoverPeopleAdapter(requireContext(), list)
+                binding.cardStackView.adapter = DiscoverPeopleAdapter(requireContext(), list, onSendClicked = { position, user ->
+                    findNavController().navigate(
+                        R.id.action_discoverPeopleFragment_to_messageFragment,
+                        Bundle().apply {
+                            putString("receiverId", user.id)
+                        }
+                    )
+                })
             }
         })
 
@@ -287,7 +318,9 @@ class DiscoverPeopleFragment : Fragment() {
                     requireContext(),
                     filteredList as ArrayList<User>,
                     selectedUsers,
-                    true
+                    true,
+                    onItemClicked = { _, _ ->
+                    }
                 )
                 if(filteredList.isNotEmpty()){
                     list = filteredList as ArrayList<User>
@@ -297,7 +330,9 @@ class DiscoverPeopleFragment : Fragment() {
                     requireContext(),
                     originalList,
                     selectedUsers,
-                    true
+                    true,
+                    onItemClicked = { _, _ ->
+                    }
                 )
             }
         })
@@ -390,7 +425,11 @@ class DiscoverPeopleFragment : Fragment() {
 
                 matchesAge && matchesGenre && matchesCareer && matchesKeywords
             }
-            binding.cardStackView.adapter = DiscoverPeopleAdapter(requireContext(), filteredList as ArrayList<User>)
+            binding.cardStackView.adapter = DiscoverPeopleAdapter(requireContext(), filteredList as ArrayList<User>, onSendClicked = { position, user ->
+                findNavController().navigate(R.id.action_discoverPeopleFragment_to_messageFragment, Bundle().apply {
+                    putString("receiverId", user.id)
+                })
+            })
             if(filteredList.isEmpty()){
                 binding.refresh.visibility = View.VISIBLE
                 binding.noUsers.visibility = View.VISIBLE
@@ -470,7 +509,9 @@ class DiscoverPeopleFragment : Fragment() {
                             requireContext(),
                             list,
                             selectedUsers,
-                            true
+                            true,
+                            onItemClicked = { _, _ ->
+                            }
                         )
                         selectedImagesUris.clear()
                         binding.imagePreviewContainer.visibility = View.GONE
@@ -544,7 +585,16 @@ class DiscoverPeopleFragment : Fragment() {
                     manager2.setDirections(Direction.HORIZONTAL)
                     binding.cardStackViewGroup.layoutManager = manager2
                     binding.cardStackViewGroup.itemAnimator = DefaultItemAnimator()
-                    binding.cardStackViewGroup.adapter = DiscoverGroupAdapter(requireContext(), groupList, authViewModel)
+                    binding.cardStackViewGroup.adapter = DiscoverGroupAdapter(requireContext(), groupList, authViewModel, onSendClicked = { position, user ->
+                        findNavController().navigate(R.id.action_discoverPeopleFragment_to_messageFragment, Bundle().apply {
+                            putString("receiverId", user.id)
+                        })
+                    },
+                        onItemClicked = { position, user ->
+                            findNavController().navigate(R.id.action_discoverPeopleFragment_to_messageFragment, Bundle().apply {
+                                putString("receiverId", user.id)
+                            })}
+                        )
 
                     if (groupList.isEmpty()){
                         binding.noUsers.visibility = View.VISIBLE
@@ -723,6 +773,24 @@ class DiscoverPeopleFragment : Fragment() {
         }
 
         return true
+    }
+
+    private fun status(status: String) {
+        authViewModel.getUserSession { user ->
+            user?.let {
+                userViewModel.updateUserInfo(it.copy(status = status))
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        status("online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        status("offline")
     }
 
 

@@ -7,6 +7,8 @@
     <color name="rojo_oscuro">#ec5353</color>
     <color name="rojo1">#8f4545</color>
     <color name="blue">#FF0000FF</color>
+    <color name="transparente">#00000000</color>
+    <color name="green">#FF008000</color>
 
     <color name="background">#F0F4F3</color>
     <color name="buttontext">#50C2C9</color>

@@ -21,10 +21,12 @@ import java.net.URL
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
+
 class ListPostAdapter (
     val onItemClicked: (Int, Post) -> Unit,
     val onEditClicked: (Int, Post) -> Unit,
     val onDeleteClicked: (Int, Post) -> Unit,
+    val onSendClicked: (Int, Post) -> Unit,
     val authViewModel: AuthViewModel,
     val coroutineScope: CoroutineScope
 ): RecyclerView.Adapter<ListPostAdapter.PostViewHolder>() {
@@ -205,6 +207,10 @@ class ListPostAdapter (
             }
             binding.deletePost.setOnClickListener {
                 onDeleteClicked(adapterPosition, item)
+            }
+
+            binding.sendMessage.setOnClickListener {
+                onSendClicked(adapterPosition, item)
             }
 
             binding.postImagesContainer.setOnTouchListener { view, motionEvent ->

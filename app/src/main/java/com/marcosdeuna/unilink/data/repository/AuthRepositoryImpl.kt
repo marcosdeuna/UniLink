@@ -104,6 +104,11 @@ class AuthRepositoryImpl(
     override fun logout(result: (UIState<String>) -> Unit) {
         //logout
         auth.signOut()
+        getUserSession { user ->
+            if (user != null){
+                updateUserInfo(user.copy(status = "offline")){}
+            }
+        }
         appPreferences.edit().putString(SharedPreferencesKey.USER_SESSION, null).apply()
         result.invoke(UIState.Success("Cierre de sesión exitoso"))
     }
@@ -127,6 +132,9 @@ class AuthRepositoryImpl(
                 if (it.isSuccessful){
                     val user = it.result?.toObject(User::class.java)
                     appPreferences.edit().putString(SharedPreferencesKey.USER_SESSION, gson.toJson(user)).apply()
+                    if (user != null) {
+                        updateUserInfo(user.copy(status = "online")){}
+                    }
                     result.invoke(user)
                 }
             }

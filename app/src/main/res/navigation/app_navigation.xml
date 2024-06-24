@@ -94,6 +94,12 @@
         <action
             android:id="@+id/action_postFragment_to_discoverPeopleFragment"
             app:destination="@id/discoverPeopleFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_chatsFragment"
+            app:destination="@id/chatsFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
@@ -162,6 +168,41 @@
         <action
             android:id="@+id/action_discoverPeopleFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_chatsFragment"
+            app:destination="@id/chatsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.marcosdeuna.unilink.ui.Messages.MessageFragment"
+        android:label="fragment_message"
+        tools:layout="@layout/fragment_message" />
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.marcosdeuna.unilink.ui.Messages.ChatsFragment"
+        android:label="fragment_chats"
+        tools:layout="@layout/fragment_chats" >
+        <action
+            android:id="@+id/action_chatsFragment_to_discoverPeopleFragment"
+            app:destination="@id/discoverPeopleFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_detailUserFragment"
+            app:destination="@id/detailUserFragment" />
     </fragment>
 
 </navigation>
