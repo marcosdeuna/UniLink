@@ -7,6 +7,8 @@ import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.marcosdeuna.unilink.data.repository.AuthRepository
 import com.marcosdeuna.unilink.data.repository.AuthRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.GroupRepository
+import com.marcosdeuna.unilink.data.repository.GroupRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.PostRepository
 import com.marcosdeuna.unilink.data.repository.PostRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.UserRepository
@@ -34,7 +36,13 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(database: FirebaseFirestore, appPreferences: SharedPreferences, gson: Gson): UserRepository {
-        return UserRepositoryImpl(database, appPreferences, gson)
+    fun provideUserRepository(database: FirebaseFirestore, appPreferences: SharedPreferences, storageReference: StorageReference, gson: Gson): UserRepository {
+        return UserRepositoryImpl(database, appPreferences, storageReference, gson)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupRepository(database: FirebaseFirestore, appPreferences: SharedPreferences, storageReference: StorageReference, gson: Gson): GroupRepository {
+        return GroupRepositoryImpl(database, storageReference)
     }
 }

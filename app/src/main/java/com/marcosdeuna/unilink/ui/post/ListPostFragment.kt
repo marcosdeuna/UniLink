@@ -20,6 +20,7 @@ import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.marcosdeuna.unilink.databinding.FragmentListPostBinding
+import com.marcosdeuna.unilink.ui.user.UserViewModel
 import com.marcosdeuna.unilink.util.UIState
 import com.marcosdeuna.unilink.util.hide
 import com.marcosdeuna.unilink.util.show
@@ -40,6 +41,7 @@ class ListPostFragment : Fragment() {
     lateinit var binding: FragmentListPostBinding
     val authViewModel: AuthViewModel by viewModels()
     val postViewModel: PostViewModel by viewModels()
+    val userViewModel: UserViewModel by viewModels()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     val adapter by lazy {
         ListPostAdapter(
@@ -109,7 +111,19 @@ class ListPostFragment : Fragment() {
                 is UIState.Success -> {
                     // Ocultar el loader
                     binding.progressBar.hide()
-                    postViewModel.getPosts()
+                    if(binding.spinnerCategory.selectedItemPosition != 0) {
+                        if (binding.searchBox.text.isNotEmpty()) {
+                            adapter.filterPostByTitleAndCategory(binding.searchBox.text.toString(), binding.spinnerCategory.selectedItem.toString())
+                        } else {
+                            adapter.filterPostByCategory(binding.spinnerCategory.selectedItem.toString())
+                        }
+                    } else {
+                        if (binding.searchBox.text.isNotEmpty()) {
+                            adapter.filterPosyByTitle(binding.searchBox.text.toString())
+                        } else {
+                            postViewModel.getPosts()
+                        }
+                    }
                 }
                 is UIState.Error -> {
                     // Ocultar el loader
@@ -131,6 +145,47 @@ class ListPostFragment : Fragment() {
         }
         setupViews()
         setUpSpinner()
+
+        binding.eliminarCuenta.setOnClickListener {
+
+            authViewModel.getUserSession { user ->
+                for (post in adapter.getPosts()) {
+                    if(post.userId == user?.id){
+                        postViewModel.deletePost(post)
+                    }
+                }
+                user?.let {
+                    userViewModel.deleteUser(it)
+                }
+            }
+            authViewModel.logout()
+            authViewModel.deleteAccount()
+            findNavController().navigate(R.id.action_postFragment_to_loginFragment)
+        }
+
+        binding.sorted.setOnClickListener {
+            binding.sortModal.visibility = View.VISIBLE
+        }
+
+        binding.sortChronological.setOnClickListener {
+            postViewModel.getPosts()
+            binding.searchBox.setText("")
+            binding.spinnerCategory.setSelection(0)
+            binding.sortModal.visibility = View.GONE
+            binding.sortChronological.isChecked = true
+            binding.sortRelevance.isChecked = false
+        }
+
+        binding.sortRelevance.setOnClickListener {
+            authViewModel.getUserSession { user ->
+                adapter.sortedByCareer(user?.career ?: "")
+            }
+            binding.searchBox.setText("")
+            binding.spinnerCategory.setSelection(0)
+            binding.sortModal.visibility = View.GONE
+            binding.sortChronological.isChecked = false
+            binding.sortRelevance.isChecked = true
+        }
     }
 
     private fun setUpSpinner() {
@@ -139,14 +194,21 @@ class ListPostFragment : Fragment() {
         Categoryadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCategory.adapter = Categoryadapter
 
+
         binding.spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Acción al seleccionar un elemento del spinner
                 if(position != 0) {
-                    adapter.filterPostByCategory(categories[position])
+                    if (binding.searchBox.text.isNotEmpty()) {
+                        adapter.filterPostByTitleAndCategory(binding.searchBox.text.toString(), categories[position])
+                    } else {
+                        adapter.filterPostByCategory(categories[position])
+                    }
                 } else {
                     postViewModel.getPosts()
                 }
+                binding.sortChronological.isChecked = true
+                binding.sortRelevance.isChecked = false
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Acción al no seleccionar un elemento del spinner
@@ -159,7 +221,13 @@ class ListPostFragment : Fragment() {
     private fun setupViews() {
 
         binding.searchBox.addTextChangedListener(afterTextChanged = {
-            adapter.filterPosyByTitle(it.toString())
+            if(binding.spinnerCategory.selectedItemPosition != 0) {
+                adapter.filterPostByTitleAndCategory(it.toString(), binding.spinnerCategory.selectedItem.toString())
+            }else{
+                adapter.filterPosyByTitle(it.toString())
+            }
+            binding.sortChronological.isChecked = true
+            binding.sortRelevance.isChecked = false
         })
 
         // Configurar la acción de la foto de perfil
@@ -190,6 +258,7 @@ class ListPostFragment : Fragment() {
                 }
                 R.id.navigation_discover_people -> {
                     // Acción para descubrir personas
+                    findNavController().navigate(R.id.action_postFragment_to_discoverPeopleFragment)
                     true
                 }
                 R.id.navigation_create_post -> {
@@ -213,6 +282,10 @@ class ListPostFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        binding.spinnerCategory.setSelection(0)
+        binding.searchBox.setText("")
+        binding.bottomNavigation.menu[0].isChecked = true
+        binding.sortChronological.isChecked = true
         authViewModel.getUserSession { user ->
             user?.let {
                 binding.profileName.setText(it.userName)

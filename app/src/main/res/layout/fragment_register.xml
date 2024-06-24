@@ -8,32 +8,26 @@
 
     <EditText
         android:id="@+id/edit_text_email"
-        android:layout_width="378dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="10dp"
         android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
-        android:textColor="@color/black"
-        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_username" />
+        app:layout_constraintTop_toBottomOf="@id/edit_text_career" />
 
     <EditText
         android:id="@+id/edit_text_password"
-        android:layout_width="378dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="10dp"
         android:hint="Contraseña"
         android:inputType="textPassword"
-        android:textColor="@color/black"
-        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_email" />
@@ -46,7 +40,7 @@
         app:layout_constraintEnd_toEndOf="@+id/edit_text_confirm_password"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edit_text_confirm_password"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_confirm_password">
+        app:layout_constraintTop_toBottomOf="@+id/privacy_policy_layout">
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -73,16 +67,12 @@
 
     <EditText
         android:id="@+id/edit_text_name"
-        android:layout_width="378dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:drawablePadding="10dp"
+        android:gravity="center"
         android:hint="Nombre"
-        android:inputType="textPersonName"
-        android:textColor="@color/black"
-        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_image_container" />
@@ -104,9 +94,10 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="136dp"
+        android:layout_marginTop="100dp"
         android:text="Registro"
-        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textColor="@color/rojo1"
         android:textSize="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,38 +105,46 @@
 
     <EditText
         android:id="@+id/edit_text_username"
-        android:layout_width="378dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="10dp"
         android:hint="Nombre de usuario"
-        android:inputType="textPersonName"
-        android:textColor="@color/black"
-        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_last_name" />
 
+    <EditText
+        android:id="@+id/edit_text_career"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="10dp"
+        android:hint="Grado cursado"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_username" />
+
     <RelativeLayout
         android:id="@+id/profile_image_container"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="36dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="26dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_add_circle"
             android:contentDescription="Profile Image"
-            android:scaleType="centerCrop"
-            android:src="@drawable/profile_placeholder" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/profile_placeholder"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.Circle" />
 
         <ImageView
             android:id="@+id/edit_profile_image"
@@ -163,35 +162,72 @@
 
     <EditText
         android:id="@+id/edit_text_last_name"
-        android:layout_width="378dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/white"
-        android:hint="Apellido"
-        android:inputType="textPersonName"
-        android:textColor="@color/black"
-        android:textSize="14dp"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="10dp"
+        android:hint="Apellidos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_name" />
 
     <EditText
         android:id="@+id/edit_text_confirm_password"
-        android:layout_width="378dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/white"
-        android:hint="Confirmar contraseña"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawablePadding="10dp"
+        android:hint="Confirmar Contraseña"
         android:inputType="textPassword"
-        android:textColor="@color/black"
-        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_password" />
+
+    <!-- LinearLayout to contain the CheckBox and Privacy Policy link -->
+    <LinearLayout
+        android:id="@+id/privacy_policy_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_confirm_password">
+
+        <CheckBox
+            android:id="@+id/checkbox_privacy_policy"
+            android:layout_width="wrap_content"
+            android:buttonTint="@color/rojo1"
+            android:layout_height="wrap_content" />
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_privacy_policy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click para aceptar la Política de Privacidad "
+                android:textColor="@color/rojo1"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/text_view_terms_and_conditions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="y los Términos y Condiciones"
+                android:textColor="@color/rojo1"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

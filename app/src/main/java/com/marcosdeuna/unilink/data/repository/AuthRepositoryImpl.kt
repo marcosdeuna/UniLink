@@ -35,15 +35,15 @@ class AuthRepositoryImpl(
                         id = it.result?.user?.uid ?: ""
                     ){
                         if(it != null){
-                            result.invoke(UIState.Success("Login successful"))
+                            result.invoke(UIState.Success("Inicio de sesión exitoso"))
                         }else{
-                            result.invoke(UIState.Error("Error"))
+                            result.invoke(UIState.Error("Error al iniciar sesión"))
                         }
                     }
                 }
             }
             .addOnFailureListener(){
-                result.invoke(UIState.Error(it.localizedMessage?:"Error"))
+                result.invoke(UIState.Error(it.localizedMessage?:"No existe usuario con ese email"))
             }
     }
 
@@ -59,7 +59,7 @@ class AuthRepositoryImpl(
                                     id = it.result?.user?.uid ?: ""
                                 ){
                                     if(it != null){
-                                        result.invoke(UIState.Success("Registration successful"))
+                                        result.invoke(UIState.Success("Registro exitoso"))
                                     }else{
                                         result.invoke(UIState.Error("Error"))
                                     }
@@ -72,13 +72,13 @@ class AuthRepositoryImpl(
                     } //update user info (name, email, password, etc.
                 }else{
                     try {
-                        throw it.exception ?: java.lang.Exception("Invalid authentication")
+                        throw it.exception ?: java.lang.Exception("Autenticación fallida")
                     }catch (e: FirebaseAuthWeakPasswordException){
-                        result.invoke(UIState.Error("Password is too weak, 6 characters minimum"))
+                        result.invoke(UIState.Error("Contraseña débil, debe tener al menos 6 caracteres"))
                     }catch (e: FirebaseAuthInvalidCredentialsException){
-                        result.invoke(UIState.Error("Invalid email"))
+                        result.invoke(UIState.Error("Email inválido"))
                     }catch (e: FirebaseAuthUserCollisionException){
-                        result.invoke(UIState.Error("Email already exists"))
+                        result.invoke(UIState.Error("Email ya registrado"))
                     }catch (e: Exception){
                         result.invoke(UIState.Error("Error"))
                     }
@@ -94,7 +94,7 @@ class AuthRepositoryImpl(
         val document = database.collection(FirestoreCollection.USER).document(user.id)
         document.set(user)
             .addOnSuccessListener {
-                result.invoke(UIState.Success("User info updated"))
+                result.invoke(UIState.Success("Usuario actualizado correctamente"))
             }
             .addOnFailureListener {
                 result.invoke(UIState.Error(it.localizedMessage?:"Error"))
@@ -105,14 +105,14 @@ class AuthRepositoryImpl(
         //logout
         auth.signOut()
         appPreferences.edit().putString(SharedPreferencesKey.USER_SESSION, null).apply()
-        result.invoke(UIState.Success("Logout successful"))
+        result.invoke(UIState.Success("Cierre de sesión exitoso"))
     }
 
     override fun forgotPassword(email: String, result: (UIState<String>) -> Unit) {
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener(){
                 if (it.isSuccessful){
-                    result.invoke(UIState.Success("Email sent"))
+                    result.invoke(UIState.Success("Correo enviado correctamente"))
                 }
             }
             .addOnFailureListener(){
@@ -158,6 +158,20 @@ class AuthRepositoryImpl(
             }
     }
 
+    override fun deleteAccount(result: (UIState<String>) -> Unit) {
+        val user = auth.currentUser
+        user?.delete()
+            ?.addOnCompleteListener(){
+                if (it.isSuccessful){
+                    appPreferences.edit().putString(SharedPreferencesKey.USER_SESSION, null).apply()
+                    result.invoke(UIState.Success("Cuenta eliminada correctamente"))
+                }
+            }
+            ?.addOnFailureListener(){
+                result.invoke(UIState.Error(it.localizedMessage?:"Error"))
+            }
+    }
+
     override suspend fun uploadProfilePicture(imageUri: Uri, result: (UIState<String>) -> Unit) {
         try{
             val uri: Uri = withContext(Dispatchers.IO){
@@ -176,4 +190,5 @@ class AuthRepositoryImpl(
         }
 
     }
+
 }

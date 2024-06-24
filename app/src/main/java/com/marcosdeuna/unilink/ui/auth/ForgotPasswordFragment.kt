@@ -67,13 +67,13 @@ class ForgotPasswordFragment : Fragment() {
                 }
                 is UIState.Success -> {
                     binding.forgotPassProgress.hide()
-                    binding.forgotPassBtn.setText("Send")
+                    binding.forgotPassBtn.setText("Enviar")
                     toast(state.data)
                     findNavController().navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
                 }
                 is UIState.Error -> {
                     binding.forgotPassProgress.hide()
-                    binding.forgotPassBtn.setText("Send")
+                    binding.forgotPassBtn.setText("Enviar")
                     toast(state.exception)
                 }
 

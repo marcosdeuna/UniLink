@@ -1,4 +1,4 @@
-package com.marcosdeuna.unilink.ui.auth
+package com.marcosdeuna.unilink.ui.user
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.databinding.FragmentDetailUserBinding
+import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import com.marcosdeuna.unilink.ui.post.ListPostAdapter
 import com.marcosdeuna.unilink.ui.post.PostViewModel
 import com.marcosdeuna.unilink.util.UIState
@@ -127,10 +128,11 @@ class DetailUserFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         authViewModel.getUserSession { user ->
-            binding.textUserName.text = user?.userName
+            binding.textUserName.text = user?.userName?.uppercase()
             binding.textEmail.text = user?.email
             binding.textName.text = user?.firstName
             binding.textLastName.text = user?.lastName
+            binding.textCareer.text = user?.career
             val profileImageUrl = user?.profilePicture
             if (profileImageUrl != null) {
                 if (profileImageUrl.isNotEmpty()) {

@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.discoverPeople.DiscoverPeopleFragment">
+
+    <!-- Panel de opciones -->
+    <LinearLayout
+        android:id="@+id/options_panel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/search_box"
+            style="@style/CustomEditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="10dp"
+            android:layout_gravity="center_vertical"
+            android:hint="Buscar personas"
+            android:inputType="text"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true" />
+
+        <!-- Botón para filtrar personas -->
+        <ImageView
+            android:id="@+id/btn_filter_people"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:background="@drawable/sorted"/>
+
+        <!-- Botón para crear grupo -->
+        <ImageView
+            android:id="@+id/btn_create_group"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ic_group"
+            android:textColor="@android:color/white" />
+
+        <!-- Botón para editar perfil -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="16dp"
+            android:contentDescription="Profile Image"
+            android:outlineSpotShadowColor="@color/black"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_placeholder"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Image.Circle"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+    <!-- CardStackView para mostrar usuarios -->
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/card_stack_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintTop_toBottomOf="@+id/options_panel"
+        tools:listitem="@layout/item_user_layout" />
+
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/card_stack_view_group"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintTop_toBottomOf="@+id/options_panel"
+        tools:listitem="@layout/item_user_layout" />
+
+    <!-- BottomNavigationView para navegación -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        app:itemIconTint="@color/rojo1"
+        app:menu="@menu/bottom_navigation_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Botón de refrescar -->
+    <ImageView
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_refresh"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/card_stack_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- TextView para mostrar mensaje de usuarios no disponibles -->
+    <TextView
+        android:id="@+id/no_users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No hay más personas disponibles..."
+        android:textColor="@color/rojo1"
+        android:visibility="visible"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/card_stack_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/card_stack_view" />
+
+    <FrameLayout
+        android:id="@+id/profile_modal"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:elevation="101dp"
+        android:background="@color/white"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/profile_picture_large"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/profile_placeholder"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_shape"/>
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Nombre Apellido"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"/>
+
+            <!--separator-->
+            <View
+                android:id="@+id/separador1"
+                android:layout_width="150dp"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center"
+                android:elevation="100dp"
+                app:layout_constraintTop_toBottomOf="@id/profile_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/see_profile_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="1dp"
+                android:backgroundTint="@color/white"
+                android:text="Ver perfil"
+                android:textColor="@color/black"/>
+
+            <View
+                android:id="@+id/separador2"
+                android:layout_width="150dp"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:layout_marginTop="1dp"
+                android:layout_gravity="center"
+                android:elevation="100dp"
+                app:layout_constraintTop_toBottomOf="@id/see_profile_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/logout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/white"
+                android:text="Cerrar sesión"
+                android:textColor="@color/black"/>
+
+            <View
+                android:id="@+id/separador3"
+                android:layout_width="150dp"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:layout_gravity="center"
+                android:elevation="100dp"
+                app:layout_constraintTop_toBottomOf="@id/logout_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/eliminar_cuenta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/white"
+                android:text="Eliminar cuenta"
+                android:textColor="@color/black"/>
+
+
+            <View
+                android:id="@+id/separadoe3"
+                android:layout_width="150dp"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:layout_gravity="center"
+                android:elevation="100dp"
+                app:layout_constraintTop_toBottomOf="@id/eliminar_cuenta"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/cerrar_modal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/white"
+                android:text="Cerrar"
+                android:textColor="@color/black"/>
+
+            <View
+                android:id="@+id/separador4"
+                android:layout_width="150dp"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:layout_gravity="center"
+                android:elevation="100dp"
+                app:layout_constraintTop_toBottomOf="@id/cerrar_modal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/filter_modal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        android:layout_marginBottom="400dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filtros"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/rojo1"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Filtro por género -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Género"
+                android:textSize="16sp"
+                android:textColor="@color/rojo1" />
+
+            <RadioGroup
+                android:id="@+id/gender_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <RadioButton
+                    android:id="@+id/male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/rojo1"
+                    android:text="Hombre"
+                    android:textColor="@color/black" />
+
+                <RadioButton
+                    android:id="@+id/female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/rojo1"
+                    android:text="Mujer"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="16dp" />
+
+                <RadioButton
+                    android:id="@+id/other"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/rojo1"
+                    android:text="Grupos"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="16dp" />
+            </RadioGroup>
+
+            <!-- Filtro por edad -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edad"
+                android:textSize="16sp"
+                android:textColor="@color/rojo1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/age_from"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Desde"
+                    android:inputType="number"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/age_to"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Hasta"
+                    android:inputType="number"
+                    android:padding="8dp"
+                    android:layout_marginStart="16dp" />
+            </LinearLayout>
+
+            <!-- Filtro por carrera -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Carrera"
+                android:textSize="16sp"
+                android:textColor="@color/rojo1" />
+
+            <EditText
+                android:id="@+id/career_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese la carrera"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Filtro por palabras clave -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Palabras clave"
+                android:textSize="16sp"
+                android:textColor="@color/rojo1" />
+
+            <EditText
+                android:id="@+id/keyword_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese palabras clave separadas por coma"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/apply_filters_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Aplicar filtros"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/rojo1"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/close_filters_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cerrar"
+                android:textColor="@color/white"
+                android:backgroundTint="@android:color/darker_gray" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/group_modal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Crear grupo"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/rojo1"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Nombre del grupo -->
+                <EditText
+                    android:id="@+id/group_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre del grupo"
+                    android:padding="8dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Descripción del grupo -->
+                <EditText
+                    android:id="@+id/group_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:hint="Descripción del grupo"
+                    android:inputType="textMultiLine"
+                    android:gravity="start|top"
+                    android:lines="4"
+                    android:minLines="3"
+                    android:maxLines="5"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Agregar miembros"
+                        android:textSize="16sp"
+                        android:textColor="@color/rojo1" />
+
+                    <!--search box para usuarios-->
+                    <EditText
+                        android:id="@+id/search_box_group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="40dp"
+                        android:drawableStart="@drawable/ic_search"
+                        android:drawablePadding="10dp"
+                        android:hint="Buscar personas"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_users"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/button_add_images"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/addpicture"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Boton eliminar imagen -->
+                    <ImageView
+                        android:id="@+id/button_delete_images"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_cancel"
+                        android:visibility="gone"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="16dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/image_preview_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal"
+                    android:visibility="visible"
+                    android:layout_marginTop="20dp">
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/create_group_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Crear grupo"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/rojo1"
+                    android:layout_marginBottom="16dp" />
+
+                <Button
+                    android:id="@+id/close_group_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cerrar"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@android:color/darker_gray" />
+
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

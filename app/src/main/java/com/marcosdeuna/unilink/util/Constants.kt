@@ -21,5 +21,6 @@ object FirebaseStorageConstant {
     val ROOT_DIRECTORY = "app"
     val PROFILE_IMAGE = "profile_image"
     val POST_IMAGE = "post_image"
+    val SOCIAL_IMAGE = "social_image"
 }
 

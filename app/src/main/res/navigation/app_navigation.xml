@@ -91,6 +91,9 @@
         <action
             android:id="@+id/action_postFragment_to_detailUserFragment"
             app:destination="@id/detailUserFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_discoverPeopleFragment"
+            app:destination="@id/discoverPeopleFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
@@ -114,7 +117,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailUserFragment"
-        android:name="com.marcosdeuna.unilink.ui.auth.DetailUserFragment"
+        android:name="com.marcosdeuna.unilink.ui.user.DetailUserFragment"
         android:label="fragment_detail_user"
         tools:layout="@layout/fragment_detail_user" >
         <action
@@ -132,8 +135,33 @@
     </fragment>
     <fragment
         android:id="@+id/editUserFragment"
-        android:name="com.marcosdeuna.unilink.ui.auth.EditUserFragment"
+        android:name="com.marcosdeuna.unilink.ui.user.EditUserFragment"
         android:label="fragment_edit_user"
-        tools:layout="@layout/fragment_edit_user" />
+        tools:layout="@layout/fragment_edit_user" >
+        <action
+            android:id="@+id/action_editUserFragment_to_detailUserFragment"
+            app:destination="@id/detailUserFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/discoverPeopleFragment"
+        android:name="com.marcosdeuna.unilink.ui.discoverPeople.DiscoverPeopleFragment"
+        android:label="fragment_discover_people_"
+        tools:layout="@layout/fragment_discover_people_" >
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_detailUserFragment"
+            app:destination="@id/detailUserFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 
 </navigation>

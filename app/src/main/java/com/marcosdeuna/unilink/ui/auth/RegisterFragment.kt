@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.FragmentRegisterBinding
+import com.marcosdeuna.unilink.ui.user.UserViewModel
 import com.marcosdeuna.unilink.util.UIState
 import com.marcosdeuna.unilink.util.hide
 import com.marcosdeuna.unilink.util.isValidEmail
@@ -30,6 +31,7 @@ class RegisterFragment : Fragment() {
     val TAG: String = "RegisterFragment"
     lateinit var binding: FragmentRegisterBinding
     val viewModel: AuthViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +53,17 @@ class RegisterFragment : Fragment() {
                 inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
             }
             false
+        }
+
+        // Open the privacy policy URL when the text view is clicked
+        binding.textViewPrivacyPolicy.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://doc-hosting.flycricket.io/unilink-privacy-policy/0e6dbac1-b41a-449e-833a-9cdc5a3b5301/privacy"))
+            startActivity(intent)
+        }
+
+        binding.textViewTermsAndConditions.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://doc-hosting.flycricket.io/unilink-terms-of-use/5d60f350-554b-422f-aba2-23c359c44aef/terms"))
+            startActivity(intent)
         }
 
         binding.buttonRegister.setOnClickListener {
@@ -146,7 +159,8 @@ class RegisterFragment : Fragment() {
             userName = binding.editTextUsername.text.toString(),
             email = binding.editTextEmail.text.toString(),
             password = binding.editTextPassword.text.toString(),
-            profilePicture = binding.profileImage.toString()
+            profilePicture = binding.profileImage.toString(),
+            career = binding.editTextCareer.text.toString(),
         )
     }
 
@@ -166,6 +180,15 @@ class RegisterFragment : Fragment() {
         if (binding.editTextUsername.text.isNullOrEmpty()) {
             isValid = false
             toast("Enter username")
+        }else{
+            userViewModel.existeUserName(binding.editTextUsername.text.toString(), binding.editTextEmail.text.toString()){state ->
+                if(state is UIState.Success){
+                    if(state.data){
+                        isValid = false
+                        toast("El nombre de usuario ya existe")
+                    }
+                }
+            }
         }
 
         if (binding.editTextEmail.text.isNullOrEmpty()) {
@@ -194,6 +217,11 @@ class RegisterFragment : Fragment() {
                 isValid = false
                 toast("Password does not match")
             }
+        }
+
+        if (!binding.checkboxPrivacyPolicy.isChecked) {
+            isValid = false
+            toast("Debe aceptar la Política de Privacidad para continuar")
         }
 
         return isValid

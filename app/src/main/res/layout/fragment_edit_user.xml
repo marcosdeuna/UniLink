@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.auth.EditUserFragment">
+    tools:context=".ui.user.EditUserFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <!-- Boton para volver atrás -->
     <ImageButton
@@ -34,14 +38,29 @@
         android:layout_marginTop="25dp"
         app:tint="@color/rojo1" />
 
+        <TextView
+            android:id="@+id/text_page_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edita tu perfil"
+            android:textColor="@color/rojo1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image_container" />
+
+
     <RelativeLayout
         android:id="@+id/profile_image_container"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_save_changes">
+        app:layout_constraintTop_toBottomOf="@+id/btn_back">
+
+
 
         <ImageView
             android:id="@+id/profile_image"
@@ -75,20 +94,21 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
         android:text="Nombre"
-        android:textColor="@color/black"
+        android:textColor="@color/rojo1"
+        android:textStyle="bold"
         android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_image_container" />
+        app:layout_constraintTop_toBottomOf="@id/text_page_title" />
 
 
     <EditText
         android:id="@+id/edit_text_name"
         android:layout_width="378dp"
-        android:layout_height="29dp"
+        android:layout_height="39dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
         android:hint="Nombre"
         android:inputType="textPersonName"
         android:textColor="@color/black"
@@ -104,7 +124,8 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
         android:text="Apellido"
-        android:textColor="@color/black"
+        android:textColor="@color/rojo1"
+        android:textStyle="bold"
         android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_name" />
@@ -112,11 +133,11 @@
     <EditText
         android:id="@+id/edit_text_last_name"
         android:layout_width="378dp"
-        android:layout_height="29dp"
+        android:layout_height="39dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
         android:hint="Apellido"
         android:inputType="textPersonName"
         android:textColor="@color/black"
@@ -132,19 +153,20 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
         android:text="Correo"
-        android:textColor="@color/black"
+        android:textColor="@color/rojo1"
+        android:textStyle="bold"
         android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_last_name" />
+        app:layout_constraintTop_toBottomOf="@id/edit_text_career" />
 
     <EditText
         android:id="@+id/edit_text_email"
         android:layout_width="378dp"
-        android:layout_height="29dp"
+        android:layout_height="39dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
         android:hint="Correo"
         android:inputType="textEmailAddress"
         android:textColor="@color/black"
@@ -154,25 +176,55 @@
         app:layout_constraintTop_toBottomOf="@id/text_email_label" />
 
     <TextView
+        android:id="@+id/text_career_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
+        android:text="Carrera"
+        android:textColor="@color/rojo1"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_username" />
+
+    <EditText
+        android:id="@+id/edit_text_career"
+        android:layout_width="378dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        style="@style/CustomEditTextStyle"
+        android:hint="Carrera"
+        android:inputType="textPersonName"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_career_label" />
+
+    <TextView
         android:id="@+id/text_username_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
         android:text="Nombre de usuario"
-        android:textColor="@color/black"
+        android:textColor="@color/rojo1"
+        android:textStyle="bold"
         android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_email" />
+        app:layout_constraintTop_toBottomOf="@id/edit_text_last_name" />
 
     <EditText
         android:id="@+id/edit_text_username"
         android:layout_width="378dp"
-        android:layout_height="29dp"
+        android:layout_height="39dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        style="@style/CustomEditTextStyle"
         android:hint="Nombre de usuario"
         android:inputType="textPersonName"
         android:textColor="@color/black"
@@ -181,5 +233,164 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_username_label" />
 
+        <TextView
+            android:id="@+id/text_description_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="20dp"
+            android:text="Descripción"
+            android:textColor="@color/rojo1"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_email" />
+
+        <EditText
+            android:id="@+id/edit_text_description"
+            style="@style/CustomEditTextStyle"
+            android:layout_width="378dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Escribe algo sobre ti..."
+            android:inputType="textMultiLine"
+            android:gravity="start|top"
+            android:lines="4"
+            android:minLines="3"
+            android:maxLines="5"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_description_label" />
+
+        <!-- Sección de Género -->
+        <TextView
+            android:id="@+id/text_gender_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="20dp"
+            android:text="Género"
+            android:textColor="@color/rojo1"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_description" />
+
+        <RadioGroup
+            android:id="@+id/radio_group_gender"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:checkedButton="@id/radio_button_male"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_gender_label">
+
+        <!-- Botón de género masculino -->
+        <RadioButton
+            android:id="@+id/radio_button_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hombre" />
+
+        <!-- Botón de género femenino -->
+        <RadioButton
+            android:id="@+id/radio_button_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mujer  " />
+
+    </RadioGroup>
+
+    <!-- Sección de Edad -->
+        <TextView
+            android:id="@+id/text_age_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="20dp"
+            android:text="Edad"
+            android:textColor="@color/rojo1"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/text_gender_label"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_description" />
+
+        <EditText
+            android:id="@+id/edit_text_age"
+            style="@style/CustomEditTextStyle"
+            android:layout_width="120dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Edad"
+            android:inputType="number"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/radio_group_gender"
+            app:layout_constraintTop_toBottomOf="@id/text_age_label" />
+
+        <TextView
+            android:id="@+id/social_pictures_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="20dp"
+            android:text="Subir tus fotos"
+            android:textColor="@color/rojo1"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radio_group_gender" />
+
+        <LinearLayout
+            android:id="@+id/image_preview_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/social_pictures_label"
+            android:layout_marginTop="20dp">
+        </LinearLayout>
+
+        <!-- Botón Agregar Imágenes -->
+        <ImageView
+            android:id="@+id/button_add_images"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/addpicture"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/rojo1"
+            app:layout_constraintStart_toEndOf="@id/social_pictures_label"
+            app:layout_constraintTop_toBottomOf="@+id/radio_group_gender"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Botón Eliminar Imágenes -->
+        <ImageView
+            android:id="@+id/button_delete_images"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cancel"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/rojo1"
+            app:layout_constraintStart_toEndOf="@id/button_add_images"
+            app:layout_constraintTop_toBottomOf="@+id/radio_group_gender"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="26dp"
+            android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

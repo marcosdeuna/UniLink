@@ -64,7 +64,7 @@ class CreatePostFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        val categories = arrayOf("Categoría 1", "Categoría 2", "Categoría 3")
+        val categories = arrayOf("Seleccionar categoría", "Categoría 1", "Categoría 2", "Categoría 3")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCategory.adapter = adapter
@@ -279,6 +279,11 @@ class CreatePostFragment : Fragment() {
             toast("La descripción es requerida")
             return false
         }
+        if(binding.spinnerCategory.selectedItem.toString() == "Seleccionar categoría"){
+            toast("La categoría es requerida")
+            return false
+        }
+
         return true
     }
 

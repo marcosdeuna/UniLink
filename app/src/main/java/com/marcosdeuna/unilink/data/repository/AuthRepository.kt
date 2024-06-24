@@ -20,5 +20,7 @@ interface AuthRepository {
 
     fun getUserById(id: String, result: (User?) -> Unit)
 
+    fun deleteAccount(result: (UIState<String>) -> Unit)
+
     suspend fun uploadProfilePicture(imageUri: Uri, result: (UIState<String>) -> Unit)
 }

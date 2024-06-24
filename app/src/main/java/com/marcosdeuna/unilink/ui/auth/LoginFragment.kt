@@ -73,13 +73,13 @@ class LoginFragment : Fragment() {
                 }
                 is UIState.Success -> {
                     binding.loginProgress.hide()
-                    binding.loginBtn.setText("Login")
+                    binding.loginBtn.setText("Iniciar sesión")
                     toast(state.data)
                     findNavController().navigate(R.id.action_loginFragment_to_postFragment)
                 }
                 is UIState.Error -> {
                     binding.loginProgress.hide()
-                    binding.loginBtn.setText("Login")
+                    binding.loginBtn.setText("Iniciar sesión")
                     toast(state.exception)
                 }
 

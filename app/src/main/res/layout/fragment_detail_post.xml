@@ -26,7 +26,8 @@
         android:layout_height="wrap_content"
         android:text="Nombre del Usuario"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="@color/rojo1"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_back"
         android:layout_marginStart="16dp"
@@ -54,6 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Categoría"
+        android:textStyle="italic"
         android:textSize="14sp"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,12 +79,13 @@
         android:layout_marginTop="16dp"/>
 
     <!-- Contenedor de imágenes -->
-    <LinearLayout
+    <ViewFlipper
         android:id="@+id/image_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="300dp"
+        android:orientation="vertical"
         android:gravity="center"
+        style="@style/CustomEditTextStyle"
         app:layout_constraintTop_toBottomOf="@id/text_description"
         android:layout_marginTop="16dp"
         android:paddingStart="16dp"
@@ -90,25 +93,14 @@
 
         <!-- Aquí puedes colocar dinámicamente las imágenes, o utilizar un RecyclerView si hay varias imágenes -->
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:src="@drawable/profile_placeholder"
             android:scaleType="centerCrop"
             android:layout_marginEnd="8dp"/>
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/profile_placeholder"
-            android:scaleType="centerCrop"
-            android:layout_marginEnd="8dp"/>
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/profile_placeholder"
-            android:scaleType="centerCrop"/>
-    </LinearLayout>
+    </ViewFlipper>
 
     <!-- Botón para enviar mensaje -->
     <Button

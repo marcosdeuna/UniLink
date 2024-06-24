@@ -58,6 +58,17 @@ class AuthViewModel @Inject constructor( val repository: AuthRepository) : ViewM
         }
     }
 
+    private val _deleteAccount = MutableLiveData<UIState<String>>()
+    val deleteAccount: MutableLiveData<UIState<String>>
+            get() = _deleteAccount
+
+    fun deleteAccount(){
+        _deleteAccount.postValue(UIState.Loading)
+        repository.deleteAccount{
+            _deleteAccount.postValue(it)
+        }
+    }
+
     fun getUserSession(result: (User?) -> Unit){
         repository.getUserSession(result)
     }
@@ -72,6 +83,7 @@ class AuthViewModel @Inject constructor( val repository: AuthRepository) : ViewM
     fun getUserById(userId: String, result: (User?) -> Unit){
         repository.getUserById(userId, result)
     }
+
 
 
 }

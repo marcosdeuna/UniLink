@@ -1,5 +1,6 @@
 package com.marcosdeuna.unilink.ui.post
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -39,6 +40,7 @@ class DetailPostFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -48,7 +50,7 @@ class DetailPostFragment : Fragment() {
         binding.textCategory.text = post?.category
         if (post != null) {
             authViewModel.getUserById(post.userId) { user ->
-                binding.textUserName.setText(user?.userName)
+                binding.textUserName.setText(user?.userName?.uppercase() )
                 authViewModel.getUserSession { userSession ->
                     if (userSession?.id == user?.id) {
                         binding.buttonEditPost.visibility = View.VISIBLE
@@ -87,6 +89,22 @@ class DetailPostFragment : Fragment() {
             postViewModel.deletePost(post!!)
             findNavController().navigate(R.id.action_detailPostFragment_to_postFragment)
         }
+
+        binding.imageContainer.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    binding.imageContainer.stopFlipping()
+                }
+                android.view.MotionEvent.ACTION_UP -> {
+                    if (motionEvent.x < view.width / 2) {
+                        binding.imageContainer.showNext()
+                    } else {
+                        binding.imageContainer.showPrevious()
+                    }
+                }
+            }
+            true
+        }
     }
 
     private fun loadImages(imageUrls: List<String>) {
@@ -106,10 +124,9 @@ class DetailPostFragment : Fragment() {
     private fun createImageView(bitmap: Bitmap): ImageView {
         val imageView = ImageView(binding.root.context)
         val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
         )
-        layoutParams.marginEnd = 8.dpToPx()
         imageView.layoutParams = layoutParams
         imageView.setImageBitmap(bitmap)
         imageView.scaleType = ImageView.ScaleType.CENTER_CROP

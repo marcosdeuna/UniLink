@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,6 +7,9 @@
     android:background="@color/rojo_claro"
     tools:context=".ui.post.CreatePostFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <ImageButton
         android:id="@+id/btn_back"
         android:layout_width="wrap_content"
@@ -20,103 +23,103 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/rojo1" />
 
+    <ImageView
+        android:id="@+id/image_logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/crearpost"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back" />
+
     <!-- Título de la página -->
         <TextView
         android:id="@+id/text_page_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Crear Nuevo Post"
+        android:text="Nuevo Post"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/rojo1"
+        app:layout_constraintTop_toBottomOf="@id/image_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginTop="20dp"/>
 
-    <!-- Campo Título -->
-        <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Título:"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_page_title"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
 
-        <EditText
+    <EditText
         android:id="@+id/edit_title"
-        android:layout_width="0dp"
+        android:layout_width="300dp"
+        style="@style/CustomEditTextStyle"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:autofillHints=""
         android:hint="Ingrese el título del post"
         android:inputType="text"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/white"
-        app:layout_constraintStart_toEndOf="@+id/text_title"
-        app:layout_constraintTop_toTopOf="@+id/text_title"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:autofillHints="" />
-
-    <!-- Campo Categoría -->
-        <TextView
-        android:id="@+id/text_category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Categoría:"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_title"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/text_page_title" />
 
-        <Spinner
-        android:id="@+id/spinner_category"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:id="@+id/spinner_layout"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-            android:hint="Seleccione una categoría"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/text_category"
-        app:layout_constraintTop_toTopOf="@+id/text_category"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <Spinner
+            android:id="@+id/spinner_category"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            style="@style/CustomEditTextStyle"
+            android:spinnerMode="dropdown"
+            android:layout_marginTop="20dp"/>
+
+        <ImageView
+            android:id="@+id/spinner_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_arrow_down"/>
+
+    </RelativeLayout>
+
 
     <!-- Campo Descripción -->
-        <TextView
+    <TextView
         android:id="@+id/text_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Descripción:"
+        android:layout_marginTop="16dp"
+        android:text="Descripción"
+        android:textColor="@color/rojo1"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_category"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/spinner_layout" />
 
-        <EditText
+    <EditText
         android:id="@+id/edit_description"
-        android:layout_width="0dp"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:hint="Ingrese la descripción del post"
         android:inputType="textMultiLine"
         android:minLines="3"
         android:textColor="@color/black"
-            android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/text_description"
-        app:layout_constraintTop_toTopOf="@+id/text_description"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_description" />
 
     <LinearLayout
         android:id="@+id/image_preview_container"
@@ -141,8 +144,8 @@
     android:backgroundTint="@color/rojo1"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/image_preview_container"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"/>
+    android:layout_marginTop="26dp"
+    android:layout_marginEnd="26dp"/>
 
     <!-- Botón Eliminar Imágenes -->
     <Button
@@ -154,8 +157,8 @@
     android:backgroundTint="@color/rojo1"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/image_preview_container"
-    android:layout_marginTop="16dp"
-    android:layout_marginStart="16dp"
+    android:layout_marginTop="26dp"
+    android:layout_marginStart="26dp"
     android:visibility="gone"/>
 
     <!-- Botón Publicar -->
@@ -193,3 +196,5 @@
     </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>

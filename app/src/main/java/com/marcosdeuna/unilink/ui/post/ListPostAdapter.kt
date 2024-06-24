@@ -1,5 +1,6 @@
 package com.marcosdeuna.unilink.ui.post
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.recyclerview.widget.RecyclerView
@@ -92,6 +93,71 @@ class ListPostAdapter (
         }
     }
 
+    fun filterPostByTitleAndCategory(title: String, category: String) {
+        if (title.isEmpty() && category.isEmpty()) {
+            posts.clear()
+            posts.addAll(originalList)
+            notifyDataSetChanged()
+        } else {
+            posts.clear()
+            posts.addAll(originalList.filter { it.title.contains(title, ignoreCase = true) && it.category.contains(category, ignoreCase = true) })
+            notifyDataSetChanged()
+        }
+    }
+
+    fun getPosts(): List<Post> {
+        return posts
+    }
+
+    fun sortedByCareer(career: String) {
+        if (career.isEmpty()) {
+            posts.clear()
+            posts.addAll(originalList)
+            notifyDataSetChanged()
+            return
+        }
+
+        coroutineScope.launch {
+            val filteredPosts = mutableListOf<Post>()
+            val nonFilteredPosts = mutableListOf<Post>()
+            var count = 0
+
+            originalList.forEach { post ->
+                authViewModel.getUserById(post.userId) { user ->
+                    var contained = false
+                    career.split(" ").forEach {
+                        if(!contained || !it.contains("Grado", ) || !it.contains("Ciclo") || !it.contains("Doble") || !it.contains("en") || !it.contains("y") || !it.contains("de") || !it.contains("del") || !it.contains("master")){
+                            if (user?.career.toString().contains(it)) {
+                                filteredPosts.add(post)
+                                contained = true
+                            } else {
+                                nonFilteredPosts.add(post)
+                                contained = true
+                            }
+                        }
+                    }
+
+                    count++
+
+                    if (count == originalList.size) {
+                        val combinedList = mutableListOf<Post>()
+                        combinedList.addAll(filteredPosts)
+                        combinedList.addAll(nonFilteredPosts)
+
+                        posts.clear()
+                        posts.addAll(combinedList)
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
     fun deletePost(post: Post) {
         val index = posts.indexOfFirst { it.id == post.id }
         if (index != -1) {
@@ -101,6 +167,7 @@ class ListPostAdapter (
     }
 
     inner class PostViewHolder(val binding: ItemNoteLayoutBinding): RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(item: Post) {
             binding.postTitle.setText(item.title)
             binding.postCategory.setText(item.category)
@@ -139,6 +206,22 @@ class ListPostAdapter (
             binding.deletePost.setOnClickListener {
                 onDeleteClicked(adapterPosition, item)
             }
+
+            binding.postImagesContainer.setOnTouchListener { view, motionEvent ->
+                when (motionEvent.action) {
+                    android.view.MotionEvent.ACTION_DOWN -> {
+                        binding.postImagesContainer.stopFlipping()
+                    }
+                    android.view.MotionEvent.ACTION_UP -> {
+                        if (motionEvent.x < view.width / 2) {
+                            binding.postImagesContainer.showNext()
+                        } else {
+                            binding.postImagesContainer.showPrevious()
+                        }
+                    }
+                }
+                true
+            }
         }
 
         private fun loadImages(imageUrls: List<String>) {
@@ -162,13 +245,12 @@ class ListPostAdapter (
         private fun createImageView(bitmap: Bitmap): ImageView {
             val imageView = ImageView(binding.root.context)
             val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
-            layoutParams.marginEnd = 8.dpToPx()
             imageView.layoutParams = layoutParams
             imageView.setImageBitmap(bitmap)
-            imageView.scaleType = ImageView.ScaleType.CENTER
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             return imageView
         }
 

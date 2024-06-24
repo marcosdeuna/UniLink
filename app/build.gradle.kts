@@ -67,6 +67,10 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx:20.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.1")
     implementation("com.squareup.picasso:picasso:2.5.2")
+    implementation("com.google.android.material:material:1.4.0")
+    implementation("com.github.yuyakaido:CardStackView:2.3.4")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.github.yalantis:ucrop:2.2.6")
 
 }
 kapt {
