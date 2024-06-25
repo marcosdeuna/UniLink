@@ -31,5 +31,4 @@ object FirebaseModule {
     fun provideFirebaseStorageInstance(): StorageReference {
         return FirebaseStorage.getInstance().getReference(FirebaseStorageConstant.ROOT_DIRECTORY)
     }
-
 }

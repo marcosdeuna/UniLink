@@ -13,5 +13,5 @@ data class User (
     val description: String = "",
     val genre: String = "",
     val age: Int = 0,
-    val status: String = "offline",
+    val status: String = "offline"
 )

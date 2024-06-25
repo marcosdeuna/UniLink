@@ -10,14 +10,14 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.marcosdeuna.unilink.R
+import com.marcosdeuna.unilink.data.model.Message
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.FragmentChatsBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
-import com.marcosdeuna.unilink.ui.discoverPeople.DiscoverPeopleAdapter
 import com.marcosdeuna.unilink.ui.post.ListPostAdapter
 import com.marcosdeuna.unilink.ui.post.PostViewModel
-import com.marcosdeuna.unilink.ui.user.MessageAdapter
 import com.marcosdeuna.unilink.ui.user.UserListAdapter
 import com.marcosdeuna.unilink.ui.user.UserViewModel
 import com.marcosdeuna.unilink.util.UIState
@@ -43,6 +43,7 @@ class ChatsFragment : Fragment() {
     private val userViewModel: UserViewModel by viewModels()
     val postViewModel: PostViewModel by viewModels()
     private var currentUser: User? = null
+    private val userLastMessages = mutableMapOf<String, String>()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     val adapter by lazy {
         ListPostAdapter(
@@ -112,8 +113,13 @@ class ChatsFragment : Fragment() {
 
         // Configurar la acción del botón de cerrar sesión
         binding.logoutButton.setOnClickListener {
-            authViewModel.logout()
-            findNavController().navigate(R.id.action_chatsFragment_to_loginFragment)
+            FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    authViewModel.logout()
+                    findNavController().navigate(R.id.action_chatsFragment_to_loginFragment)
+                }
+            }
+
         }
 
         binding.seeProfileButton.setOnClickListener {
@@ -205,7 +211,7 @@ class ChatsFragment : Fragment() {
                         }
                     }
 
-                    val adapter = UserListAdapter(requireContext(), userList, arrayListOf<String>(), false, onItemClicked = { position, user ->
+                    val adapter = UserListAdapter(requireContext(), userList, userLastMessages, arrayListOf<String>(), false, onItemClicked = { position, user ->
                         findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                             putString("receiverId", user.id)
                         })
@@ -229,13 +235,13 @@ class ChatsFragment : Fragment() {
                     val completename = "${it.firstName} ${it.lastName}"
                     completename.toLowerCase(Locale.ROOT).contains(search.toLowerCase(Locale.ROOT), ignoreCase = true)
                 }
-                binding.chatsRecyclerView.adapter = UserListAdapter(requireContext(), filteredList as ArrayList<User>, arrayListOf<String>(), false, onItemClicked = { position, user ->
+                binding.chatsRecyclerView.adapter = UserListAdapter(requireContext(), filteredList as ArrayList<User>, userLastMessages, arrayListOf<String>(), false, onItemClicked = { position, user ->
                     findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                         putString("receiverId", user.id)
                     })
                 })
             } else {
-                binding.chatsRecyclerView.adapter = UserListAdapter(requireContext(), userList, arrayListOf<String>(), false, onItemClicked = { position, user ->
+                binding.chatsRecyclerView.adapter = UserListAdapter(requireContext(), userList, userLastMessages, arrayListOf<String>(), false, onItemClicked = { position, user ->
                     findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                         putString("receiverId", user.id)
                     })
@@ -309,10 +315,19 @@ class ChatsFragment : Fragment() {
                     for (user in result.data) {
                         if (userIds.contains(user.id)) {
                             userList.add(user)
+                            val lastMessage = getLastMessageForUser(user.id)
+                            lastMessage?.let {
+                                val messageText = if (it.senderId == currentUser?.id) {
+                                    "Tú: ${it.message}"
+                                } else {
+                                    it.message
+                                }
+                                userLastMessages[user.id] = messageText
+                            }
                         }
                     }
 
-                    val adapter = UserListAdapter(requireContext(), userList, arrayListOf<String>(), false, onItemClicked = { position, user ->
+                    val adapter = UserListAdapter(requireContext(), userList, userLastMessages, arrayListOf(), false, onItemClicked = { position, user ->
                         findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                             putString("receiverId", user.id)
                         })
@@ -342,6 +357,19 @@ class ChatsFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         status("offline")
+    }
+
+    private fun getLastMessageForUser(userId: String): Message? {
+        return messageViewModel.messages.value?.let { result ->
+            if (result is UIState.Success) {
+                result.data.filter {
+                    (it.senderId == currentUser?.id && it.receiverId == userId) ||
+                            (it.senderId == userId && it.receiverId == currentUser?.id)
+                }.maxByOrNull { it.timestamp!! }
+            } else {
+                null
+            }
+        }
     }
 
 

@@ -1,18 +1,12 @@
 package com.marcosdeuna.unilink.ui.Messages
 
-import android.content.BroadcastReceiver
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.marcosdeuna.unilink.data.model.Message
-import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.data.repository.MessageRepository
-import com.marcosdeuna.unilink.data.repository.PostRepository
 import com.marcosdeuna.unilink.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

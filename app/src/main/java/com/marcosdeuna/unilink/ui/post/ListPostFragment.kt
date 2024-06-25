@@ -1,10 +1,12 @@
 package com.marcosdeuna.unilink.ui.post
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -19,7 +21,11 @@ import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+import com.marcosdeuna.unilink.data.model.Token
 import com.marcosdeuna.unilink.databinding.FragmentListPostBinding
+import com.marcosdeuna.unilink.ui.notifications.TokenViewModel
 import com.marcosdeuna.unilink.ui.user.UserViewModel
 import com.marcosdeuna.unilink.util.UIState
 import com.marcosdeuna.unilink.util.hide
@@ -40,6 +46,7 @@ class ListPostFragment : Fragment() {
 
     lateinit var binding: FragmentListPostBinding
     val authViewModel: AuthViewModel by viewModels()
+    private val tokenViewModel: TokenViewModel by viewModels()
     val postViewModel: PostViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -84,6 +91,8 @@ class ListPostFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getFCMToken()
+
         binding.profileModal.visibility = View.GONE
         binding.recyclerViewPosts.adapter = adapter
         postViewModel.getPosts()
@@ -348,5 +357,20 @@ class ListPostFragment : Fragment() {
         super.onPause()
         status("offline")
     }
+    private fun getFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            authViewModel.getUserSession { user ->
+                user?.let {
+                    val token = Token(task.result.toString(),it.id )
+                    tokenViewModel.saveToken(token)
+                }
+            }
+        })
+    }
+
 
 }

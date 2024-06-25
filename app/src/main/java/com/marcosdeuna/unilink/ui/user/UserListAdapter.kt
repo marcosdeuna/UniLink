@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.ItemUserListBinding
 
 class UserListAdapter(
     val context: Context,
     val list: ArrayList<User>,
+    val lastMessage: Map<String, String>,
     val selectedUsers: ArrayList<String>,
     val b: Boolean,
     val onItemClicked: (Int, User) -> Unit
@@ -37,6 +37,9 @@ class UserListAdapter(
 
         if (!b) {
             holder.binding.checkboxInclude.visibility = View.GONE
+            lastMessage[currentUser.id]?.let { lastMessage ->
+                holder.binding.lastMessage.text = lastMessage
+            }
 
             if(currentUser.status.equals("online")) {
                 holder.binding.onlineStatus.visibility = View.VISIBLE
@@ -72,4 +75,5 @@ class UserListAdapter(
         }
 
     }
+
 }

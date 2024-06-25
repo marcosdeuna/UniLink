@@ -31,6 +31,9 @@
             app:destination="@id/onboardingFragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -179,7 +182,11 @@
         android:id="@+id/messageFragment"
         android:name="com.marcosdeuna.unilink.ui.Messages.MessageFragment"
         android:label="fragment_message"
-        tools:layout="@layout/fragment_message" />
+        tools:layout="@layout/fragment_message" >
+        <action
+            android:id="@+id/action_messageFragment_to_chatsFragment"
+            app:destination="@id/chatsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.marcosdeuna.unilink.ui.Messages.ChatsFragment"

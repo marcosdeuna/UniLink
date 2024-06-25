@@ -190,6 +190,7 @@ class DiscoverPeopleFragment : Fragment() {
                     binding.recyclerViewUsers.adapter = UserListAdapter(
                         requireContext(),
                         list,
+                        mapOf(),
                         selectedUsers,
                         true,
                         onItemClicked = { _, _ ->
@@ -317,6 +318,7 @@ class DiscoverPeopleFragment : Fragment() {
                 binding.recyclerViewUsers.adapter = UserListAdapter(
                     requireContext(),
                     filteredList as ArrayList<User>,
+                    mapOf(),
                     selectedUsers,
                     true,
                     onItemClicked = { _, _ ->
@@ -329,6 +331,7 @@ class DiscoverPeopleFragment : Fragment() {
                 binding.recyclerViewUsers.adapter = UserListAdapter(
                     requireContext(),
                     originalList,
+                    mapOf(),
                     selectedUsers,
                     true,
                     onItemClicked = { _, _ ->
@@ -508,6 +511,7 @@ class DiscoverPeopleFragment : Fragment() {
                         binding.recyclerViewUsers.adapter = UserListAdapter(
                             requireContext(),
                             list,
+                            mapOf(),
                             selectedUsers,
                             true,
                             onItemClicked = { _, _ ->

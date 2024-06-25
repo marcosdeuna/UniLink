@@ -13,6 +13,8 @@ import com.marcosdeuna.unilink.data.repository.MessageRepository
 import com.marcosdeuna.unilink.data.repository.MessageRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.PostRepository
 import com.marcosdeuna.unilink.data.repository.PostRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.TokenRepository
+import com.marcosdeuna.unilink.data.repository.TokenRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.UserRepository
 import com.marcosdeuna.unilink.data.repository.UserRepositoryImpl
 import dagger.Module
@@ -52,5 +54,11 @@ object RepositoryModule {
     @Singleton
     fun provideMessageRepository(database: FirebaseFirestore): MessageRepository {
         return MessageRepositoryImpl(database)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenRepository(database: FirebaseFirestore): TokenRepository {
+        return TokenRepositoryImpl(database)
     }
 }

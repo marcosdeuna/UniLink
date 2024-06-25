@@ -1,12 +1,14 @@
 package com.marcosdeuna.unilink.ui.post
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +19,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.data.model.User

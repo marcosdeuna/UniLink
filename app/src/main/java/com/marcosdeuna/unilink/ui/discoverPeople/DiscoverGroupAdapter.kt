@@ -124,7 +124,7 @@ class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val
                 // Check if all members are loaded
                 if (loadedMemberCount == group.members.size) {
                     // All members are loaded, set up RecyclerView adapter
-                    dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, arrayListOf(), false, onItemClicked = { position, user ->
+                    dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, mapOf(), arrayListOf(), false, onItemClicked = { position, user ->
                         onItemClicked(position, user)
                         dialogBinding.closeButton.performClick()
                     })
