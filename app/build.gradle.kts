@@ -5,6 +5,7 @@ plugins {
     id ("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
+    alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
 }
 
 android {
@@ -58,6 +59,8 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,6 +81,7 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
+    implementation("org.osmdroid:osmdroid-android:6.0.3")
 
 }
 kapt {

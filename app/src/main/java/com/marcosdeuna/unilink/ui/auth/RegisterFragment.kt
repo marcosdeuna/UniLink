@@ -1,9 +1,12 @@
 package com.marcosdeuna.unilink.ui.auth
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -11,6 +14,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -98,7 +103,12 @@ class RegisterFragment : Fragment() {
                     }
                 } else {
                     // Si no se seleccionó una imagen de perfil
-                    toast("Please select a profile picture")
+                    val user = getUserObject().copy(profilePicture = "https://firebasestorage.googleapis.com/v0/b/unilink-fe270.appspot.com/o/app%2Fprofile_image%2Fprofile_placeholder.jpg?alt=media&token=1d982351-6091-4c7f-9ed1-ffb09bdf6a26")
+                    viewModel.register(
+                        binding.editTextEmail.text.toString(),
+                        binding.editTextPassword.text.toString(),
+                        user
+                    )
                 }
             }
         }
@@ -113,8 +123,39 @@ class RegisterFragment : Fragment() {
     }
 
     fun openImagePicker() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_MEDIA_IMAGES), PERMISSION_REQUEST_CODE)
+            } else {
+                // Permission has already been granted
+                pickImageFromGallery()
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
+            } else {
+                // Permission has already been granted
+                pickImageFromGallery()
+            }
+        }
+    }
+
+    private fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, open the gallery
+                pickImageFromGallery()
+            } else {
+                // Permission was denied, show a toast or handle accordingly
+                toast("Permission denied to access your gallery.")
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -229,5 +270,7 @@ class RegisterFragment : Fragment() {
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
+        private const val PERMISSION_REQUEST_CODE = 1001
+
     }
 }

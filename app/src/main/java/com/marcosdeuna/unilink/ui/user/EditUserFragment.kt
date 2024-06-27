@@ -1,10 +1,13 @@
 package com.marcosdeuna.unilink.ui.user
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -13,6 +16,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.marcosdeuna.unilink.R
@@ -39,6 +44,7 @@ class EditUserFragment : Fragment() {
     private val userViewModel: UserViewModel by viewModels()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val selectedImagesUris = mutableListOf<Uri>()
+    var flag = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -188,8 +194,11 @@ class EditUserFragment : Fragment() {
         userViewModel.updateUserInfo.observe(viewLifecycleOwner) { state ->
             when(state){
                 is UIState.Success -> {
-                    toast("Usuario actualizado correctamente")
-                    findNavController().popBackStack()
+                    if(flag==1){
+                        toast("Usuario actualizado correctamente")
+                        findNavController().popBackStack()
+                    }
+                    flag=1
                 }
                 is UIState.Error -> {
                     toast("Error actualizando el usuario: ${state.exception}")
@@ -298,16 +307,100 @@ class EditUserFragment : Fragment() {
     companion object {
         private const val IMAGE_PICK_CODE = 1000
         private const val IMAGE_PICK_CODE1 = 1001
+        private const val PERMISSION_REQUEST_CODE = 1002
+
     }
 
     fun openImagePicker(mode: Int) {
-        if(mode == 0){
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, IMAGE_PICK_CODE)
-        }else{
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            startActivityForResult(intent, IMAGE_PICK_CODE1)
+        if (mode == 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                        PERMISSION_REQUEST_CODE
+                    )
+                } else {
+                    // Permission has already been granted
+                    launchImagePicker()
+                }
+            } else {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        PERMISSION_REQUEST_CODE
+                    )
+                } else {
+                    // Permission has already been granted
+                    launchImagePicker()
+                }
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                        PERMISSION_REQUEST_CODE
+                    )
+                } else {
+                    // Permission has already been granted
+                    launchImagePickerMultiple()
+                }
+            } else {
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                startActivityForResult(intent, IMAGE_PICK_CODE1)
+            }
+        }
+    }
+
+    private fun launchImagePicker() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+
+    private fun launchImagePickerMultiple() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        startActivityForResult(intent, IMAGE_PICK_CODE1)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, open the gallery
+                if (permissions[0] == Manifest.permission.READ_MEDIA_IMAGES) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        launchImagePicker()
+                    } else {
+                        ActivityCompat.requestPermissions(
+                            requireActivity(),
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                            PERMISSION_REQUEST_CODE
+                        )
+                    }
+                } else if (permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE) {
+                    launchImagePicker()
+                }
+            } else {
+                // Permission was denied, show a toast or handle accordingly
+                toast("Permission denied to access your gallery.")
+            }
         }
     }
 
@@ -346,6 +439,7 @@ class EditUserFragment : Fragment() {
         }
     }
 
+
     private fun status(status: String) {
         authViewModel.getUserSession { user ->
             user?.let { userViewModel.updateUserInfo(it.copy(status = status)) }
@@ -354,11 +448,13 @@ class EditUserFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        flag=0
         status("online")
     }
 
     override fun onPause() {
         super.onPause()
+        flag=0
         status("offline")
     }
 }

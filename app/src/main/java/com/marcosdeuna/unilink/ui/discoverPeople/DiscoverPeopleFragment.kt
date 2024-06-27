@@ -1,11 +1,14 @@
 package com.marcosdeuna.unilink.ui.discoverPeople
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -14,6 +17,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -25,6 +30,7 @@ import com.marcosdeuna.unilink.data.model.Group
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.FragmentDiscoverPeopleBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
+import com.marcosdeuna.unilink.ui.auth.RegisterFragment
 import com.marcosdeuna.unilink.ui.post.ListPostAdapter
 import com.marcosdeuna.unilink.ui.post.PostViewModel
 import com.marcosdeuna.unilink.ui.user.GroupViewModel
@@ -223,7 +229,13 @@ class DiscoverPeopleFragment : Fragment() {
                 }
                 R.id.navigation_discover_places -> {
                     // Acción para descubrir lugares
-                    true
+                    if(hasLocationPermission()){
+                        findNavController().navigate(R.id.action_discoverPeopleFragment_to_discoverPlacesFragment)
+                    }else{
+                        requestLocationPermission()
+                        toast("Para acceder necesitas permitir el acceso a tu ubicación.")
+                    }
+                    false
                 }
                 R.id.navigation_chats -> {
                     // Acción para chats
@@ -600,7 +612,7 @@ class DiscoverPeopleFragment : Fragment() {
                             })}
                         )
 
-                    if (groupList.isEmpty()){
+                    if (groupList.isEmpty() && binding.other.isChecked){
                         binding.noUsers.visibility = View.VISIBLE
                         binding.refresh.visibility = View.VISIBLE
                     }else{
@@ -650,15 +662,66 @@ class DiscoverPeopleFragment : Fragment() {
         }
     }
 
+    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    }
+
+
+
     override fun onDestroy() {
         super.onDestroy()
         coroutineScope.cancel()
     }
 
     fun openImagePicker() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                    PERMISSION_REQUEST_CODE
+                )
+            } else {
+                // Permission has already been granted
+                pickImageFromGallery()
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    PERMISSION_REQUEST_CODE
+                )
+            } else {
+                // Permission has already been granted
+                pickImageFromGallery()
+            }
+        }
+    }
+
+    fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, open the gallery
+                pickImageFromGallery()
+            } else {
+                // Permission was denied, show a toast or handle accordingly
+                toast("Permission denied to access your gallery.")
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -758,6 +821,9 @@ class DiscoverPeopleFragment : Fragment() {
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
+        private const val PERMISSION_REQUEST_CODE = 1001
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1005
+
     }
 
     private fun validation(): Boolean {

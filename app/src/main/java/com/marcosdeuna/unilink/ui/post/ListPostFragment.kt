@@ -1,10 +1,13 @@
 package com.marcosdeuna.unilink.ui.post
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +17,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -44,6 +49,7 @@ import java.util.Locale.Category
 @AndroidEntryPoint
 class ListPostFragment : Fragment() {
 
+    val TAG = "ListPostFragment"
     lateinit var binding: FragmentListPostBinding
     val authViewModel: AuthViewModel by viewModels()
     private val tokenViewModel: TokenViewModel by viewModels()
@@ -285,7 +291,16 @@ class ListPostFragment : Fragment() {
                 }
                 R.id.navigation_discover_places -> {
                     // Acción para descubrir lugares
-                    true
+                    // Verificar permisos de ubicación
+                    if (hasLocationPermission()) {
+                        // Si tiene permisos, navega al fragmento Discover Places
+                        findNavController().navigate(R.id.action_postFragment_to_discoverPlacesFragment)
+                    } else {
+                        // Si no tiene permisos, solicitarlos
+                        requestLocationPermission()
+                        toast("Para acceder necesitas permitir el acceso a tu ubicación.")
+                    }
+                    false
                 }
                 R.id.navigation_chats -> {
                     // Acción para chats
@@ -300,6 +315,41 @@ class ListPostFragment : Fragment() {
             binding.sortModal.visibility = View.GONE
         }
     }
+    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1005
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permiso de ubicación concedido, navega al fragmento Discover Places
+                findNavController().navigate(R.id.action_postFragment_to_discoverPlacesFragment)
+            } else {
+                // Permiso de ubicación denegado, mostrar mensaje al usuario
+                toast("Para acceder a Discover Places, necesitas permitir el acceso a tu ubicación.")
+            }
+        }
+    }
+
+
+
+
 
     override fun onStart() {
         super.onStart()

@@ -9,10 +9,14 @@ import com.marcosdeuna.unilink.data.repository.AuthRepository
 import com.marcosdeuna.unilink.data.repository.AuthRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.GroupRepository
 import com.marcosdeuna.unilink.data.repository.GroupRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.MarkersRepository
+import com.marcosdeuna.unilink.data.repository.MarkersRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.MessageRepository
 import com.marcosdeuna.unilink.data.repository.MessageRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.PostRepository
 import com.marcosdeuna.unilink.data.repository.PostRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.ReviewRepository
+import com.marcosdeuna.unilink.data.repository.ReviewRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.TokenRepository
 import com.marcosdeuna.unilink.data.repository.TokenRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.UserRepository
@@ -46,7 +50,7 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideGroupRepository(database: FirebaseFirestore, appPreferences: SharedPreferences, storageReference: StorageReference, gson: Gson): GroupRepository {
+    fun provideGroupRepository(database: FirebaseFirestore, storageReference: StorageReference): GroupRepository {
         return GroupRepositoryImpl(database, storageReference)
     }
 
@@ -60,5 +64,17 @@ object RepositoryModule {
     @Singleton
     fun provideTokenRepository(database: FirebaseFirestore): TokenRepository {
         return TokenRepositoryImpl(database)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMarkersRepository(database: FirebaseFirestore, storageReference: StorageReference,): MarkersRepository {
+        return MarkersRepositoryImpl(database, storageReference)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReviewRepository(database: FirebaseFirestore): ReviewRepository {
+        return ReviewRepositoryImpl(database)
     }
 }

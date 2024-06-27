@@ -1,5 +1,7 @@
 package com.marcosdeuna.unilink.ui.Messages
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -7,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -145,7 +149,13 @@ class ChatsFragment : Fragment() {
                 }
                 R.id.navigation_discover_places -> {
                     // Acción para descubrir lugares
-                    true
+                    if (hasLocationPermission()) {
+                        findNavController().navigate(R.id.action_chatsFragment_to_discoverPlacesFragment)
+                    } else {
+                        requestLocationPermission()
+                        toast("Para acceder necesitas permitir el acceso a tu ubicación.")
+                    }
+                    false
                 }
                 R.id.navigation_chats -> {
                     // Acción para chats
@@ -270,6 +280,38 @@ class ChatsFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1005
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permiso de ubicación concedido, navega al fragmento Discover Places
+                findNavController().navigate(R.id.action_postFragment_to_discoverPlacesFragment)
+            } else {
+                // Permiso de ubicación denegado, mostrar mensaje al usuario
+                toast("Para acceder a Discover Places, necesitas permitir el acceso a tu ubicación.")
             }
         }
     }

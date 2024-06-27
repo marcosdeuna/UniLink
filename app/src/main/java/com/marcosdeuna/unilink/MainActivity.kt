@@ -91,15 +91,5 @@ class MainActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
-
-        // Check and request gallery permissions
-        val galleryPermissions = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        if (galleryPermissions.any {
-                ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
-            }) {
-            requestGalleryPermission.launch(galleryPermissions)
-        }
     }
 }

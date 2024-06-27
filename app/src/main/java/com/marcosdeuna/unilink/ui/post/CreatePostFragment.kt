@@ -1,11 +1,14 @@
 package com.marcosdeuna.unilink.ui.post
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -17,6 +20,8 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.messaging.FirebaseMessaging
@@ -84,11 +89,15 @@ class CreatePostFragment : Fragment() {
                 binding.editDescription.setText(it.description)
                 binding.spinnerCategory.setSelection(
                     when (it.category) {
-                        "Categoría 1" -> 0
-                        "Categoría 2" -> 1
-                        else -> 2
-                    }
-                )
+                        "Seleccionar categoría" -> 0
+                        "Búsqueda de piso" -> 1
+                        "Asuntos académicos" -> 2
+                        "Eventos deportivos" -> 3
+                        "Eventos de ocio" -> 4
+                        "Actualidad en SdC" -> 5
+                        "Variado" -> 6
+                        else -> 0
+                    })
                 if(it.images.isNotEmpty()){
                     loadImages(it.images)
                     binding.imagePreviewContainer.visibility = View.VISIBLE
@@ -293,15 +302,46 @@ class CreatePostFragment : Fragment() {
     }
 
     fun openImagePicker() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_MEDIA_IMAGES), PERMISSION_REQUEST_CODE)
+            } else {
+                // Permission has already been granted
+                pickImageFromGallery()
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
+            } else {
+                // Permission has already been granted
+                pickImageFromGallery()
+            }
+        }
+    }
+
+    private fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        startActivityForResult(intent, CreatePostFragment.IMAGE_PICK_CODE)
+        startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, open the gallery
+                pickImageFromGallery()
+            } else {
+                // Permission was denied, show a toast or handle accordingly
+                toast("Permission denied to access your gallery.")
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        selectedImagesUris.clear()
-        if (resultCode == Activity.RESULT_OK && requestCode == CreatePostFragment.IMAGE_PICK_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
+            selectedImagesUris.clear()
             if (data?.clipData != null) {
                 val clipData = data.clipData
                 for (i in 0 until clipData!!.itemCount) {
@@ -317,16 +357,17 @@ class CreatePostFragment : Fragment() {
             binding.imagePreviewContainer.visibility = View.VISIBLE
             binding.buttonAddImages.text = "Cambiar imagen"
             binding.buttonDeleteImages.visibility = View.VISIBLE
-        }else{
+        } else {
             toast("No se seleccionó ninguna imagen")
         }
 
-        if(selectedImagesUris.isEmpty()){
+        if (selectedImagesUris.isEmpty()) {
             binding.imagePreviewContainer.visibility = View.GONE
             binding.buttonAddImages.text = "Agregar imagen"
             binding.buttonDeleteImages.visibility = View.GONE
         }
     }
+
 
     // Dentro de la función updateImagePreview en tu Fragmento
 
@@ -395,7 +436,9 @@ class CreatePostFragment : Fragment() {
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
+        private const val PERMISSION_REQUEST_CODE = 1001
     }
+
 
     private fun status(status: String) {
         authViewModel.getUserSession { user ->

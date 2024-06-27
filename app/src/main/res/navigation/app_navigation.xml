@@ -103,6 +103,9 @@
         <action
             android:id="@+id/action_postFragment_to_chatsFragment"
             app:destination="@id/chatsFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_discoverPlacesFragment"
+            app:destination="@id/discoverPlacesFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
@@ -170,13 +173,18 @@
             app:destination="@id/detailUserFragment" />
         <action
             android:id="@+id/action_discoverPeopleFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/discoverPeopleFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_discoverPeopleFragment_to_messageFragment"
             app:destination="@id/messageFragment" />
         <action
             android:id="@+id/action_discoverPeopleFragment_to_chatsFragment"
             app:destination="@id/chatsFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_discoverPlacesFragment"
+            app:destination="@id/discoverPlacesFragment" />
     </fragment>
     <fragment
         android:id="@+id/messageFragment"
@@ -206,10 +214,41 @@
             app:destination="@id/messageFragment" />
         <action
             android:id="@+id/action_chatsFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/chatsFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_chatsFragment_to_detailUserFragment"
             app:destination="@id/detailUserFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_discoverPlacesFragment"
+            app:destination="@id/discoverPlacesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/discoverPlacesFragment"
+        android:name="com.marcosdeuna.unilink.ui.discoverPlaces.DiscoverPlacesFragment"
+        android:label="fragment_discover_places"
+        tools:layout="@layout/fragment_discover_places" >
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_chatsFragment"
+            app:destination="@id/chatsFragment" />
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_detailUserFragment"
+            app:destination="@id/detailUserFragment" />
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_discoverPeopleFragment"
+            app:destination="@id/discoverPeopleFragment" />
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/discoverPlacesFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>

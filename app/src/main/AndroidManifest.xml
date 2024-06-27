@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -14,10 +24,11 @@
         android:theme="@style/Theme.UniLink"
         tools:targetApi="31" >
 
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/notificacion" />
-
-        <meta-data android:name="com.google.firebase.messaging.default_notification_color"
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/rojo1" />
 
         <activity
@@ -29,17 +40,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".ui.notifications.NotificationService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-
 
 </manifest>
