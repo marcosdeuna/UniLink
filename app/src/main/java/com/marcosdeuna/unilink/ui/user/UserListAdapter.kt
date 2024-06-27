@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.ItemUserListBinding
+import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 
 class UserListAdapter(
     val context: Context,
@@ -16,7 +17,8 @@ class UserListAdapter(
     val lastMessage: Map<String, String>,
     val selectedUsers: ArrayList<String>,
     val b: Boolean,
-    val onItemClicked: (Int, User) -> Unit
+    val onItemClicked: (Int, User) -> Unit,
+    val authViewModel: AuthViewModel
 ): RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
     inner class UserViewHolder (val binding: ItemUserListBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -51,8 +53,17 @@ class UserListAdapter(
         }
 
         // Set user name and email
-        holder.binding.userFullName.text =
-            "${currentUser.firstName} ${currentUser.lastName}"
+        authViewModel.getUserSession {
+            if (it != null) {
+                if(it.id == currentUser.id) {
+                    holder.binding.userFullName.text = "Tú"
+                } else {
+                    holder.binding.userFullName.text =
+                        "${currentUser.firstName} ${currentUser.lastName}"
+                }
+            }
+        }
+
 
         Glide.with(context)
             .load(currentUser.profilePicture)

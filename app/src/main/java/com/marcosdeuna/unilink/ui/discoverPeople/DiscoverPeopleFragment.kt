@@ -62,12 +62,16 @@ class DiscoverPeopleFragment : Fragment() {
     private val groupViewModel: GroupViewModel by viewModels()
     private lateinit var manager: CardStackLayoutManager
     private lateinit var manager2: CardStackLayoutManager
+    private lateinit var manager3: CardStackLayoutManager
     private var list: ArrayList<User> = arrayListOf()
     private var selectedUsers: ArrayList<String> = arrayListOf()
     private var originalList: ArrayList<User> = arrayListOf()
     private var groupList: ArrayList<Group> = arrayListOf()
+    private var adminGroupList: ArrayList<Group> = arrayListOf()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val selectedImagesUris = mutableListOf<Uri>()
+    private var imagesloaded = false
+    private var flag = false
     val adapter by lazy {
         ListPostAdapter(
             onItemClicked = { position, post ->
@@ -112,7 +116,13 @@ class DiscoverPeopleFragment : Fragment() {
         binding.profileModal.visibility = View.GONE
         binding.refresh.setOnClickListener {
             userViewModel.getUsers()
+            if(adminGroupList.isNotEmpty()){
+                binding.myGroups.visibility = View.VISIBLE
+            }else{
+                binding.myGroups.visibility = View.GONE
+            }
             binding.cardStackViewGroup.visibility = View.GONE
+            binding.cardStackViewAdminGroup.visibility = View.GONE
             binding.cardStackView.visibility = View.VISIBLE
             binding.refresh.visibility = View.GONE
             binding.noUsers.visibility = View.GONE
@@ -121,6 +131,16 @@ class DiscoverPeopleFragment : Fragment() {
             binding.ageTo.setText("")
             binding.careerFilter.setText("")
             binding.keywordFilter.setText("")
+            binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_my_groups, null))
+            binding.cardStackViewGroup.visibility = View.GONE
+            binding.cardStackView.visibility = View.VISIBLE
+            binding.cardStackViewAdminGroup.visibility = View.GONE
+            binding.cardStackViewAdminGroup.scrollToPosition(0)
+            binding.cardStackView.scrollToPosition(0)
+            binding.cardStackViewGroup.scrollToPosition(0)
+            userViewModel.getUsers()
+            groupViewModel.getGroups()
+            flag = false
         }
         authViewModel.getUserSession { user ->
             if (user != null) {
@@ -200,7 +220,8 @@ class DiscoverPeopleFragment : Fragment() {
                         selectedUsers,
                         true,
                         onItemClicked = { _, _ ->
-                        }
+                        },
+                        authViewModel
                     )
                 }
                 is UIState.Error -> {
@@ -282,7 +303,14 @@ class DiscoverPeopleFragment : Fragment() {
         }
 
         binding.searchBox.addTextChangedListener(afterTextChanged = {
+            binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_my_groups, null))
+            flag = false
             binding.cardStackView.scrollToPosition(0)
+            binding.cardStackView.visibility = View.VISIBLE
+            binding.cardStackViewGroup.visibility = View.GONE
+            binding.cardStackViewAdminGroup.visibility = View.GONE
+            binding.cardStackViewGroup.scrollToPosition(0)
+            binding.cardStackViewAdminGroup.scrollToPosition(0)
             val search = it.toString()
             if (search.isNotEmpty()) {
                 val filteredList = originalList.filter {
@@ -334,7 +362,8 @@ class DiscoverPeopleFragment : Fragment() {
                     selectedUsers,
                     true,
                     onItemClicked = { _, _ ->
-                    }
+                    },
+                    authViewModel
                 )
                 if(filteredList.isNotEmpty()){
                     list = filteredList as ArrayList<User>
@@ -347,7 +376,8 @@ class DiscoverPeopleFragment : Fragment() {
                     selectedUsers,
                     true,
                     onItemClicked = { _, _ ->
-                    }
+                    },
+                    authViewModel
                 )
             }
         })
@@ -389,10 +419,14 @@ class DiscoverPeopleFragment : Fragment() {
 
 
         binding.applyFiltersButton.setOnClickListener{
+            binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_my_groups, null))
+            flag = false
             binding.noUsers.visibility = View.GONE
             binding.refresh.visibility = View.GONE
             binding.cardStackView.scrollToPosition(0)
             binding.cardStackViewGroup.scrollToPosition(0)
+            binding.cardStackViewAdminGroup.scrollToPosition(0)
+            binding.cardStackViewAdminGroup.visibility = View.GONE
             binding.cardStackViewGroup.visibility = View.GONE
             binding.cardStackView.visibility = View.VISIBLE
             var ageTo = ""
@@ -415,6 +449,7 @@ class DiscoverPeopleFragment : Fragment() {
                     if(binding.other.isChecked){
                         binding.cardStackViewGroup.visibility = View.VISIBLE
                         binding.cardStackView.visibility = View.GONE
+                        binding.cardStackViewAdminGroup.visibility = View.GONE
 
                     }
                 }
@@ -454,12 +489,42 @@ class DiscoverPeopleFragment : Fragment() {
             binding.filterModal.visibility = View.GONE
         }
 
+        binding.myGroups.setOnClickListener {
+            if(!flag){
+                binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_close, null))
+                binding.cardStackViewGroup.visibility = View.GONE
+                binding.cardStackView.visibility = View.GONE
+                binding.cardStackViewAdminGroup.visibility = View.VISIBLE
+                binding.cardStackViewAdminGroup.scrollToPosition(0)
+                binding.cardStackView.scrollToPosition(0)
+                binding.cardStackViewGroup.scrollToPosition(0)
+                flag = true
+            }else{
+                binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_my_groups, null))
+                binding.cardStackViewGroup.visibility = View.GONE
+                binding.cardStackView.visibility = View.VISIBLE
+                binding.cardStackViewAdminGroup.visibility = View.GONE
+                binding.cardStackViewAdminGroup.scrollToPosition(0)
+                binding.cardStackView.scrollToPosition(0)
+                binding.cardStackViewGroup.scrollToPosition(0)
+                userViewModel.getUsers()
+                groupViewModel.getGroups()
+                flag = false
+            }
+
+
+        }
+
         binding.btnCreateGroup.setOnClickListener {
             binding.groupModal.visibility = View.VISIBLE
+            binding.createGroupButton.visibility = View.VISIBLE
+            binding.updateGroupButton.visibility = View.GONE
         }
 
         binding.closeGroupButton.setOnClickListener {
             binding.groupModal.visibility = View.GONE
+            binding.createGroupButton.visibility = View.VISIBLE
+            binding.updateGroupButton.visibility = View.GONE
         }
 
         binding.buttonAddImages.setOnClickListener{
@@ -517,6 +582,7 @@ class DiscoverPeopleFragment : Fragment() {
                     }
 
                     is UIState.Success -> {
+                        binding.myGroups.visibility = View.VISIBLE
                         binding.groupModal.visibility = View.GONE
                         binding.groupName.setText("")
                         binding.groupDescription.setText("")
@@ -527,7 +593,8 @@ class DiscoverPeopleFragment : Fragment() {
                             selectedUsers,
                             true,
                             onItemClicked = { _, _ ->
-                            }
+                            },
+                            authViewModel
                         )
                         selectedImagesUris.clear()
                         binding.imagePreviewContainer.visibility = View.GONE
@@ -539,6 +606,16 @@ class DiscoverPeopleFragment : Fragment() {
                         )
                         binding.buttonDeleteImages.visibility = View.GONE
                         toast("Grupo creado exitosamente")
+                        binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_my_groups, null))
+                        binding.cardStackViewGroup.visibility = View.GONE
+                        binding.cardStackView.visibility = View.VISIBLE
+                        binding.cardStackViewAdminGroup.visibility = View.GONE
+                        binding.cardStackViewAdminGroup.scrollToPosition(0)
+                        binding.cardStackView.scrollToPosition(0)
+                        binding.cardStackViewGroup.scrollToPosition(0)
+                        userViewModel.getUsers()
+                        groupViewModel.getGroups()
+                        flag = false
                     }
 
                     is UIState.Error -> {
@@ -559,12 +636,20 @@ class DiscoverPeopleFragment : Fragment() {
                 }
                 is UIState.Success -> {
                     groupList = arrayListOf()
-
+                    adminGroupList = arrayListOf()
                     authViewModel.getUserSession { user ->
                         for (group in state.data){
                             if(!group.members.contains(user?.id.toString())){
                                 groupList.add(group)
                             }
+                            if(group.admin == user?.id){
+                                adminGroupList.add(group)
+                            }
+                        }
+                        if(adminGroupList.isNotEmpty()){
+                            binding.myGroups.visibility = View.VISIBLE
+                        }else{
+                            binding.myGroups.visibility = View.GONE
                         }
                     }
                     groupList.shuffle()
@@ -609,10 +694,221 @@ class DiscoverPeopleFragment : Fragment() {
                         onItemClicked = { position, user ->
                             findNavController().navigate(R.id.action_discoverPeopleFragment_to_messageFragment, Bundle().apply {
                                 putString("receiverId", user.id)
-                            })}
+                            })},
+                        onEditClicked = {_, _ ->},
+                        onDeleteClicked = {_, _ ->}
                         )
 
                     if (groupList.isEmpty() && binding.other.isChecked){
+                        binding.noUsers.visibility = View.VISIBLE
+                        binding.refresh.visibility = View.VISIBLE
+                    }else{
+                        binding.noUsers.visibility = View.GONE
+                        binding.refresh.visibility = View.GONE
+                    }
+
+                    adminGroupList.shuffle()
+                    manager3 = CardStackLayoutManager(requireContext(), object : CardStackListener{
+                        override fun onCardDragging(direction: Direction?, ratio: Float) {
+                        }
+
+                        override fun onCardSwiped(direction: Direction?) {
+                            if (manager3.topPosition == adminGroupList.size){
+                                toast("No hay más grupos")
+                                binding.noUsers.visibility = View.VISIBLE
+                                binding.refresh.visibility = View.VISIBLE
+                            }
+                        }
+
+                        override fun onCardRewound() {
+                        }
+
+                        override fun onCardCanceled() {
+                        }
+
+                        override fun onCardAppeared(view: View?, position: Int) {
+                        }
+
+                        override fun onCardDisappeared(view: View?, position: Int) {
+                        }
+
+                    })
+
+                    manager3.setVisibleCount(3)
+                    manager3.setTranslationInterval(0.6f)
+                    manager3.setScaleInterval(0.8f)
+                    manager3.setMaxDegree(20.0f)
+                    manager3.setDirections(Direction.HORIZONTAL)
+                    binding.cardStackViewAdminGroup.layoutManager = manager3
+                    binding.cardStackViewAdminGroup.itemAnimator = DefaultItemAnimator()
+                    binding.cardStackViewAdminGroup.adapter = DiscoverGroupAdapter(requireContext(), adminGroupList, authViewModel, onSendClicked = { position, user ->
+                        findNavController().navigate(R.id.action_discoverPeopleFragment_to_messageFragment, Bundle().apply {
+                            putString("receiverId", user.id)
+                        })
+                    },
+                        onItemClicked = { position, user ->
+                            findNavController().navigate(R.id.action_discoverPeopleFragment_to_messageFragment, Bundle().apply {
+                                putString("receiverId", user.id)
+                            })},
+                        onEditClicked = { position, group ->
+                            binding.groupModal.visibility = View.VISIBLE
+                            binding.createGroupButton.visibility = View.GONE
+                            binding.updateGroupButton.visibility = View.VISIBLE
+
+                            binding.groupName.setText(group.name)
+                            binding.groupDescription.setText(group.description)
+                            selectedUsers = group.members as ArrayList<String>
+                            binding.recyclerViewUsers.adapter = UserListAdapter(
+                                requireContext(),
+                                list,
+                                mapOf(),
+                                selectedUsers,
+                                true,
+                                onItemClicked = { _, _ ->
+                                },
+                                authViewModel
+                            )
+
+                            if(group.images.isNotEmpty()){
+                                loadImages(group.images)
+                                imagesloaded = true
+                                binding.imagePreviewContainer.visibility = View.VISIBLE
+                                binding.buttonAddImages.setImageDrawable(resources.getDrawable(R.drawable.ic_edit, null))
+                                binding.buttonDeleteImages.visibility = View.VISIBLE
+                            }
+
+                            binding.updateGroupButton.setOnClickListener {
+                                if (validation()) {
+                                    val groupName = binding.groupName.text.toString()
+                                    val groupDescription = binding.groupDescription.text.toString()
+                                    var groupUsers = selectedUsers
+                                    if (selectedImagesUris.isNotEmpty()) {
+                                        groupViewModel.onUploadImage(selectedImagesUris) { result ->
+                                            when (result) {
+                                                is UIState.Success -> {
+                                                    groupViewModel.updateGroup(group.copy(
+                                                        name = groupName,
+                                                        description = groupDescription,
+                                                        members = groupUsers,
+                                                        images = result.data
+                                                    ))
+                                                }
+
+                                                is UIState.Error -> {
+                                                    toast(result.exception)
+                                                }
+
+                                                UIState.Empty -> {
+                                                }
+                                                UIState.Loading -> {
+
+                                                }
+                                            }
+                                        }
+                                    }else{
+                                        groupViewModel.updateGroup(group.copy(
+                                            name = groupName,
+                                            description = groupDescription,
+                                            members = groupUsers
+                                        ))
+                                    }
+                                }
+
+                                groupViewModel.updateGroup.observe(viewLifecycleOwner) { state ->
+                                    when (state) {
+                                        is UIState.Loading -> {
+                                        }
+
+                                        is UIState.Success -> {
+                                            imagesloaded = false
+                                            binding.myGroups.visibility = View.VISIBLE
+                                            binding.groupModal.visibility = View.GONE
+                                            binding.groupName.setText("")
+                                            binding.groupDescription.setText("")
+                                            binding.recyclerViewUsers.adapter = UserListAdapter(
+                                                requireContext(),
+                                                list,
+                                                mapOf(),
+                                                selectedUsers,
+                                                true,
+                                                onItemClicked = { _, _ ->
+                                                },
+                                                authViewModel
+                                            )
+                                            selectedImagesUris.clear()
+                                            binding.imagePreviewContainer.visibility = View.GONE
+                                            binding.buttonAddImages.setImageDrawable(
+                                                resources.getDrawable(
+                                                    R.drawable.addpicture,
+                                                    null
+                                                )
+                                            )
+                                            binding.buttonDeleteImages.visibility = View.GONE
+                                            binding.updateGroupButton.visibility = View.GONE
+                                            binding.createGroupButton.visibility = View.VISIBLE
+                                            toast("Grupo actualizado exitosamente")
+                                            binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_my_groups, null))
+                                            binding.cardStackViewGroup.visibility = View.GONE
+                                            binding.cardStackView.visibility = View.VISIBLE
+                                            binding.cardStackViewAdminGroup.visibility = View.GONE
+                                            binding.cardStackViewAdminGroup.scrollToPosition(0)
+                                            binding.cardStackView.scrollToPosition(0)
+                                            binding.cardStackViewGroup.scrollToPosition(0)
+                                            userViewModel.getUsers()
+                                            groupViewModel.getGroups()
+                                            flag = false
+                                        }
+
+                                        is UIState.Error -> {
+                                            toast(state.exception)
+                                        }
+
+                                        UIState.Empty -> {
+
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+
+                        },
+                        onDeleteClicked = { position, group ->
+                            groupViewModel.deleteGroup(group)
+
+                            groupViewModel.deleteGroup.observe(viewLifecycleOwner) { state ->
+                                when (state) {
+                                    is UIState.Loading -> {
+                                    }
+
+                                    is UIState.Success -> {
+                                        toast("Grupo eliminado exitosamente")
+                                        binding.myGroups.setImageDrawable(resources.getDrawable(R.drawable.ic_my_groups, null))
+                                        binding.cardStackViewGroup.visibility = View.GONE
+                                        binding.cardStackView.visibility = View.VISIBLE
+                                        binding.cardStackViewAdminGroup.visibility = View.GONE
+                                        binding.cardStackViewAdminGroup.scrollToPosition(0)
+                                        binding.cardStackView.scrollToPosition(0)
+                                        binding.cardStackViewGroup.scrollToPosition(0)
+                                        userViewModel.getUsers()
+                                        groupViewModel.getGroups()
+                                        flag = false
+                                    }
+
+                                    is UIState.Error -> {
+                                        toast(state.exception)
+                                    }
+
+                                    UIState.Empty -> {
+
+                                    }
+                                }
+                            }
+                        }
+                    )
+
+                    if (adminGroupList.isEmpty() && binding.other.isChecked){
                         binding.noUsers.visibility = View.VISIBLE
                         binding.refresh.visibility = View.VISIBLE
                     }else{
@@ -629,12 +925,14 @@ class DiscoverPeopleFragment : Fragment() {
             }
         }
 
+
     }
 
     override fun onStart() {
         super.onStart()
         binding.cardStackView.visibility = View.VISIBLE
         binding.cardStackViewGroup.visibility = View.GONE
+        binding.cardStackViewAdminGroup.visibility = View.GONE
         binding.ageFrom.isEnabled = true
         binding.ageTo.isEnabled = true
         binding.careerFilter.isEnabled = true
@@ -839,6 +1137,11 @@ class DiscoverPeopleFragment : Fragment() {
 
         if(selectedUsers.isEmpty()){
             toast("Por favor seleccione al menos un usuario")
+            return false
+        }
+
+        if(selectedImagesUris.isEmpty() && !imagesloaded){
+            toast("Por favor seleccione al menos una imagen")
             return false
         }
 

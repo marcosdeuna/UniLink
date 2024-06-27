@@ -39,6 +39,30 @@ class GroupViewModel @Inject constructor( val repository: GroupRepository): View
         }
     }
 
+    private val _deleteGroup = MutableLiveData<UIState<String>>()
+    val deleteGroup: LiveData<UIState<String>>
+        get() = _deleteGroup
+
+    fun deleteGroup(group: Group){
+        _deleteGroup.postValue(UIState.Loading)
+        repository.deleteGroup(group){
+            _deleteGroup.postValue(it)
+        }
+    }
+
+    private val _updateGroup = MutableLiveData<UIState<String>>()
+
+    val updateGroup: LiveData<UIState<String>>
+        get() = _updateGroup
+
+    fun updateGroup(group: Group){
+
+        _updateGroup.postValue(UIState.Loading)
+        repository.updateGroup(group){
+            _updateGroup.postValue(it)
+        }
+    }
+
     fun onUploadImage(imagesUri: List<Uri>, result: (UIState<List<String>>) -> Unit){
         result.invoke(UIState.Loading)
         var imagesUrl = arrayListOf<String>()

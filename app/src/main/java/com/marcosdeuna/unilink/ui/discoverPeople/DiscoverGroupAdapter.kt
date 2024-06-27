@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 
 class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val authViewModel: AuthViewModel, val onSendClicked: (Int, User) -> Unit, val onItemClicked: (Int, User) -> Unit,
-) : RecyclerView.Adapter<DiscoverGroupAdapter.DiscoverGroupViewHolder>() {
+val onEditClicked: (Int, Group) -> Unit, val onDeleteClicked: (Int, Group)-> Unit) : RecyclerView.Adapter<DiscoverGroupAdapter.DiscoverGroupViewHolder>() {
 
     inner class DiscoverGroupViewHolder(val binding: ItemUserLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -38,6 +38,30 @@ class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: DiscoverGroupViewHolder, position: Int) {
         val currentGroup = list[position]
+
+        authViewModel.getUserById(currentGroup.admin) { user ->
+            authViewModel.getUserSession {
+                userSession ->
+                user?.let {
+                    if (userSession != null) {
+                        if (userSession.id == it.id) {
+                            holder.binding.btnEdit.visibility = android.view.View.VISIBLE
+                            holder.binding.btnDelete.visibility = android.view.View.VISIBLE
+                            holder.binding.btnEdit.setOnClickListener {
+                                onEditClicked(position, currentGroup)
+                            }
+                            holder.binding.btnDelete.setOnClickListener {
+                                onDeleteClicked(position, currentGroup)
+                            }
+                            holder.binding.chat.visibility = android.view.View.GONE
+                        } else {
+                            holder.binding.btnEdit.visibility = android.view.View.GONE
+                            holder.binding.btnDelete.visibility = android.view.View.GONE
+                        }
+                    }
+                }
+            }
+        }
 
         // Set group name and description
         holder.binding.userName.text = currentGroup.name
@@ -100,8 +124,14 @@ class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val
 
         dialogBinding.userFullName.text = group.name
         authViewModel.getUserById(group.admin) { adminUser ->
-            adminUser?.let {
-                dialogBinding.userEmailDetail.text = "Creado por ${it.firstName} ${it.lastName}"
+            authViewModel.getUserSession {
+                if (adminUser != null) {
+                    if(adminUser.id == it?.id) {
+                        dialogBinding.userEmailDetail.text = "Creado por: Mi"
+                    } else {
+                        dialogBinding.userEmailDetail.text = "Creado por: ${adminUser.firstName} ${adminUser.lastName}"
+                    }
+                }
             }
         }
         dialogBinding.userDescription.text = group.description
@@ -127,7 +157,7 @@ class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val
                     dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, mapOf(), arrayListOf(), false, onItemClicked = { position, user ->
                         onItemClicked(position, user)
                         dialogBinding.closeButton.performClick()
-                    })
+                    }, authViewModel)
 
                     // Show the dialog only when all data is ready
                     val dialog = AlertDialog.Builder(context)

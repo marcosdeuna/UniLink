@@ -225,7 +225,7 @@ class ChatsFragment : Fragment() {
                         findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                             putString("receiverId", user.id)
                         })
-                    })
+                    }, authViewModel)
                     binding.chatsRecyclerView.adapter = adapter
                     if (userList.isEmpty()) {
                         binding.noChatsText.visibility = View.VISIBLE
@@ -249,13 +249,13 @@ class ChatsFragment : Fragment() {
                     findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                         putString("receiverId", user.id)
                     })
-                })
+                }, authViewModel)
             } else {
                 binding.chatsRecyclerView.adapter = UserListAdapter(requireContext(), userList, userLastMessages, arrayListOf<String>(), false, onItemClicked = { position, user ->
                     findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                         putString("receiverId", user.id)
                     })
-                })
+                }, authViewModel)
             }
         })
 
@@ -373,7 +373,7 @@ class ChatsFragment : Fragment() {
                         findNavController().navigate(R.id.action_chatsFragment_to_messageFragment, Bundle().apply {
                             putString("receiverId", user.id)
                         })
-                    })
+                    }, authViewModel)
                     binding.chatsRecyclerView.adapter = adapter
                 }
                 is UIState.Error -> {

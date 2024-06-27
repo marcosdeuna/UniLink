@@ -13,6 +13,7 @@ import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.databinding.ItemUserLayoutBinding
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.DialogUserDetailsBinding
+import com.marcosdeuna.unilink.util.hide
 
 class DiscoverPeopleAdapter(val context: Context, val list: ArrayList<User>, val onSendClicked: (Int, User) -> Unit): RecyclerView.Adapter<DiscoverPeopleAdapter.DiscoverPeopleViewHolder>() {
 
@@ -29,6 +30,9 @@ class DiscoverPeopleAdapter(val context: Context, val list: ArrayList<User>, val
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: DiscoverPeopleViewHolder, position: Int) {
         val currentUser = list[position]
+
+        holder.binding.btnDelete.hide()
+        holder.binding.btnEdit.hide()
 
         // Set user name and email
         holder.binding.userName.text =
