@@ -122,5 +122,15 @@
         android:visibility="gone"
         android:background="@color/transparente"/>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/aux2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="55dp"
+        android:layout_marginTop="90dp"
+        android:elevation="1000dp"
+        android:visibility="visible"
+        android:background="@color/rojo_claro"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

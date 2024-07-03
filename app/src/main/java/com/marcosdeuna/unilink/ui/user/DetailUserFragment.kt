@@ -1,5 +1,6 @@
 package com.marcosdeuna.unilink.ui.user
 
+import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.marcosdeuna.unilink.R
+import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.databinding.FragmentDetailUserBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import com.marcosdeuna.unilink.ui.post.ListPostAdapter
@@ -51,7 +53,7 @@ class DetailUserFragment : Fragment() {
             },
             onDeleteClicked = { position, post ->
                 // Acción al hacer clic en eliminar
-                postViewModel.deletePost(post)
+                showDeleteConfirmationDialog(post)
             },
             onSendClicked = { position, post ->
                 // Acción al hacer clic en enviar
@@ -180,5 +182,16 @@ class DetailUserFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         status("offline")
+    }
+
+    private fun showDeleteConfirmationDialog(post: Post) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmación")
+            .setMessage("¿Estás seguro de que deseas eliminar este post?")
+            .setPositiveButton("Sí") { dialog, which ->
+                postViewModel.deletePost(post)
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 }

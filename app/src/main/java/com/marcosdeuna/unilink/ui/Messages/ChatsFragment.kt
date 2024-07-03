@@ -1,6 +1,7 @@
 package com.marcosdeuna.unilink.ui.Messages
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -91,38 +92,25 @@ class ChatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.profileModal.visibility = View.GONE
-        binding.eliminarCuenta.setOnClickListener {
+        binding.aux.visibility = View.GONE
 
-            authViewModel.getUserSession { user ->
-                for (post in adapter.getPosts()) {
-                    if(post.userId == user?.id){
-                        postViewModel.deletePost(post)
-                    }
-                }
-                user?.let {
-                    userViewModel.deleteUser(it)
-                }
-            }
-            authViewModel.logout()
-            authViewModel.deleteAccount()
-            findNavController().navigate(R.id.action_chatsFragment_to_loginFragment)
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_chatsFragment_to_settingsFragment)
         }
+
         binding.profilePicture.setOnClickListener {
             binding.profileModal.visibility = View.VISIBLE
+            binding.aux.visibility = View.VISIBLE
         }
 
         binding.cerrarModal.setOnClickListener {
             binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
         }
 
         // Configurar la acción del botón de cerrar sesión
         binding.logoutButton.setOnClickListener {
-            FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    authViewModel.logout()
-                    findNavController().navigate(R.id.action_chatsFragment_to_loginFragment)
-                }
-            }
+            showLogoutConfirmationDialog()
 
         }
 
@@ -163,6 +151,20 @@ class ChatsFragment : Fragment() {
                 }
                 else -> false
             }
+        }
+        binding.aux.setOnClickListener{
+            binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
+        }
+
+        binding.calendar.setOnClickListener{
+            findNavController().navigate(R.id.action_chatsFragment_to_calendarFragment)
+        }
+
+
+
+        binding.noChatsText.setOnClickListener{
+            findNavController().navigate(R.id.action_chatsFragment_to_discoverPeopleFragment)
         }
 
         authViewModel.getUserSession {
@@ -412,6 +414,23 @@ class ChatsFragment : Fragment() {
                 null
             }
         }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmación")
+            .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+            .setPositiveButton("Sí") { dialog, which ->
+                FirebaseMessaging.getInstance().deleteToken()
+                    .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isSuccessful) {
+                            authViewModel.logout()
+                            findNavController().navigate(R.id.action_chatsFragment_to_loginFragment)
+                        }
+                    }
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
 

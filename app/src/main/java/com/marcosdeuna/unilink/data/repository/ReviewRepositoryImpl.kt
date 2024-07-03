@@ -68,6 +68,21 @@ class ReviewRepositoryImpl(val database: FirebaseFirestore) : ReviewRepository {
             }
     }
 
+    override fun deleteReviewByUser(user: String, result: (UIState<String>) -> Unit) {
+        database.collection("reviews")
+            .whereEqualTo("userId", user)
+            .get()
+            .addOnSuccessListener { documents ->
+                documents.documents.forEach { document ->
+                    document.reference.delete()
+                }
+                result(UIState.Success("${documents.size()}"))
+            }
+            .addOnFailureListener { exception ->
+                result(UIState.Error(exception.message.toString()))
+            }
+    }
+
     override fun getReviewsByMarkerId(markerId: String, result: (UIState<List<Review>>) -> Unit) {
         database.collection("reviews")
             .whereEqualTo("markerId", markerId)

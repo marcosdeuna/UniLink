@@ -65,6 +65,13 @@ class MarkersViewModel @Inject constructor( val repository: MarkersRepository) :
         }
     }
 
+    fun deleteMarkerByUser(user: User){
+        _deleteMarker.postValue(UIState.Loading)
+        repository.deleteMarkerByUser(user.id){
+            _deleteMarker.postValue(it)
+        }
+    }
+
     private var markersListener: ListenerRegistration? = null
     fun observeMarkers(){
         markersListener = FirebaseFirestore.getInstance()

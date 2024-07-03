@@ -106,6 +106,12 @@
         <action
             android:id="@+id/action_postFragment_to_discoverPlacesFragment"
             app:destination="@id/discoverPlacesFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
@@ -185,6 +191,12 @@
         <action
             android:id="@+id/action_discoverPeopleFragment_to_discoverPlacesFragment"
             app:destination="@id/discoverPlacesFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_discoverPeopleFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/messageFragment"
@@ -223,6 +235,12 @@
         <action
             android:id="@+id/action_chatsFragment_to_discoverPlacesFragment"
             app:destination="@id/discoverPlacesFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/discoverPlacesFragment"
@@ -249,6 +267,26 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/discoverPlacesFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_discoverPlacesFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.marcosdeuna.unilink.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.marcosdeuna.unilink.ui.calendar.CalendarFragment"
+        android:label="CalendarFragment" />
 
 </navigation>

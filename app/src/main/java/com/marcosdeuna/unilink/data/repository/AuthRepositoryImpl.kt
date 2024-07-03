@@ -47,7 +47,7 @@ class AuthRepositoryImpl(
                 }
             }
             .addOnFailureListener(){
-                result.invoke(UIState.Error(it.localizedMessage?:"No existe usuario con ese email"))
+                result.invoke(UIState.Error("No existe usuario con ese email"))
             }
     }
 
@@ -89,7 +89,7 @@ class AuthRepositoryImpl(
                 }
             }
             .addOnFailureListener(){
-                result.invoke(UIState.Error(it.localizedMessage?:"Error"))
+                result.invoke(UIState.Error("Error al registrar usuario"))
             }
 
     }
@@ -171,12 +171,14 @@ class AuthRepositoryImpl(
     }
 
     override fun deleteAccount(result: (UIState<String>) -> Unit) {
+
         val user = auth.currentUser
         user?.delete()
             ?.addOnCompleteListener(){
                 if (it.isSuccessful){
                     appPreferences.edit().putString(SharedPreferencesKey.USER_SESSION, null).apply()
                     result.invoke(UIState.Success("Cuenta eliminada correctamente"))
+
                 }
             }
             ?.addOnFailureListener(){

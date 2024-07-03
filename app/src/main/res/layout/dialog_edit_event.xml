@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    style="@style/CustomEditTextStyle"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/eventTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Titulo" />
+
+    <EditText
+        android:id="@+id/eventDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción" />
+
+    <EditText
+        android:id="@+id/eventLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Lugar" />
+
+    <Button
+        android:id="@+id/selectDateButton"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/rojo1"
+        android:text="Seleccionar Fecha" />
+
+    <Button
+        android:id="@+id/selectRemindersButton"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/rojo1"
+        android:text="Añadir Recordatorios" />
+
+    <Button
+        android:id="@+id/secondReminderButton"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/rojo1"
+        android:text="Añadir Segundo Recordatorio" />
+</LinearLayout>

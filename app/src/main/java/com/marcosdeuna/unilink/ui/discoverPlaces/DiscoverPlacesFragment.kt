@@ -603,13 +603,8 @@ class DiscoverPlacesFragment : Fragment(), MapEventsReceiver {
 
                         // Delete button click listener
                         dialogView.findViewById<ImageView>(R.id.deleteButton).setOnClickListener {
-                            reviewAdapter?.getReviews()?.forEach { review ->
-                                if (review.markerId == markerData.id) {
-                                    reviewViewModel.deleteReview(review)
-                                }
-                            }
-                            removeMarkerFromMap(markerData)
-                            markersViewModel.deleteMarker(markerData)
+                            showDeleteConfirmationDialog(markerData)
+
                             toast("Marker deleted successfully.")
                             alertDialog.dismiss()
                         }
@@ -652,7 +647,7 @@ class DiscoverPlacesFragment : Fragment(), MapEventsReceiver {
                                 showAddReviewDialog(markerData.id, review)
                             },
                             onDeleteReviewClicked = { review ->
-                                reviewViewModel.deleteReview(review)
+                                showDeleteConfirmationDialog2(review)
                             }
                         )
 
@@ -679,6 +674,12 @@ class DiscoverPlacesFragment : Fragment(), MapEventsReceiver {
                 else -> Unit
             }
         }
+
+        binding.aux.setOnClickListener{
+            binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
+        }
+
 
         reviewViewModel.deleteReview.observe(viewLifecycleOwner) {
             when (it) {
@@ -733,6 +734,57 @@ class DiscoverPlacesFragment : Fragment(), MapEventsReceiver {
         }
     }
 
+    private fun showDeleteConfirmationDialog2(review: Review) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar review")
+            .setMessage("¿Estás seguro de que deseas eliminar esta review?")
+            .setPositiveButton("Sí") { dialog, _ ->
+                reviewViewModel.deleteReview(review)
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmación")
+            .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+            .setPositiveButton("Sí") { dialog, which ->
+                FirebaseMessaging.getInstance().deleteToken()
+                    .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isSuccessful) {
+                            authViewModel.logout()
+                            findNavController().navigate(R.id.action_discoverPlacesFragment_to_loginFragment)
+                        }
+                    }
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun showDeleteConfirmationDialog(markerData: Markers) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar marcador")
+            .setMessage("¿Estás seguro de que deseas eliminar este marcador?")
+            .setPositiveButton("Sí") { dialog, _ ->
+                markersViewModel.deleteMarker(markerData)
+                reviewAdapter?.getReviews()?.forEach { review ->
+                    if (review.markerId == markerData.id) {
+                        reviewViewModel.deleteReview(review)
+                    }
+                }
+                removeMarkerFromMap(markerData)
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
 
     private fun createImageView(imageUri: String): ImageView {
         val imageView = ImageView(context)
@@ -756,46 +808,35 @@ class DiscoverPlacesFragment : Fragment(), MapEventsReceiver {
         }
 
         binding.profileModal.visibility = View.GONE
-        binding.eliminarCuenta.setOnClickListener {
-
-            authViewModel.getUserSession { user ->
-                for (post in adapter.getPosts()) {
-                    if (post.userId == user?.id) {
-                        postViewModel.deletePost(post)
-                    }
-                }
-                user?.let {
-                    userViewModel.deleteUser(it)
-                }
-            }
-            authViewModel.logout()
-            authViewModel.deleteAccount()
-            findNavController().navigate(R.id.action_discoverPlacesFragment_to_loginFragment)
-        }
+        binding.aux.visibility = View.GONE
 
 
         binding.profilePicture.setOnClickListener {
             binding.profileModal.visibility = View.VISIBLE
+            binding.aux.visibility = View.VISIBLE
         }
 
         binding.cerrarModal.setOnClickListener {
             binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
         }
 
         // Configurar la acción del botón de cerrar sesión
         binding.logoutButton.setOnClickListener {
-            FirebaseMessaging.getInstance().deleteToken()
-                .addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful) {
-                        authViewModel.logout()
-                        findNavController().navigate(R.id.action_discoverPlacesFragment_to_loginFragment)
-                    }
-                }
+            showLogoutConfirmationDialog()
 
+        }
+
+        binding.calendar.setOnClickListener {
+            findNavController().navigate(R.id.action_discoverPlacesFragment_to_calendarFragment)
         }
 
         binding.seeProfileButton.setOnClickListener {
             findNavController().navigate(R.id.action_discoverPlacesFragment_to_detailUserFragment)
+        }
+
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_discoverPlacesFragment_to_settingsFragment)
         }
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->

@@ -70,6 +70,8 @@ class MessageFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         binding.message.clearFocus()
         userViewModel.observeUsers()
         userViewModel.users.observe(viewLifecycleOwner) { result ->
@@ -113,24 +115,7 @@ class MessageFragment : Fragment() {
             sendMessage()
         }
 
-        binding.message.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                binding.root.postDelayed({
-                    updateBottomMargin(keyboardsize+60)
-                    binding.aux.visibility = View.VISIBLE
-                }, 400)
-            }
-        }
 
-        binding.aux.setOnClickListener{
-            updateBottomMargin(0)
-            //ocultar teclado
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(binding.message.windowToken, 0)
-            //Eedit text pierde el foco
-            binding.message.clearFocus()
-            binding.aux.visibility = View.GONE
-        }
 
         messageViewModel.messages.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -139,9 +124,16 @@ class MessageFragment : Fragment() {
                 }
                 is UIState.Success -> {
                     val messages = result.data
-                    val adapter = MessageAdapter(requireContext(), messages, receiverUser.profilePicture, currentUser)
+                    val adapter = MessageAdapter(requireContext(), messages, receiverUser.profilePicture, currentUser, { message, action ->
+                        handleMessageAction(message, action)
+                    })
                     binding.recyclerViewPosts.adapter = adapter
                     binding.recyclerViewPosts.scrollToPosition(messages.size - 1)
+
+                    //despues de 1 segundo
+                    binding.aux2.postDelayed({
+                        binding.aux2.visibility = View.GONE
+                    }, 500)
                 }
                 is UIState.Error -> {
                     toast(result.exception)
@@ -164,14 +156,6 @@ class MessageFragment : Fragment() {
 
         seenMessage()
 
-
-
-    }
-
-    private fun updateBottomMargin(newMargin: Int) {
-        val layoutParams = binding.bottom.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.setMargins(0, 0, 0, newMargin)
-        binding.bottom.layoutParams = layoutParams
     }
 
     private fun seenMessage() {
@@ -282,13 +266,27 @@ class MessageFragment : Fragment() {
                     toast(result.exception)
                 }
 
-                UIState.Empty -> TODO()
-                is UIState.Error -> TODO()
-                UIState.Loading -> TODO()
-                is UIState.Success -> TODO()
+                UIState.Empty -> {}
             }
         }
     }
+
+    private fun handleMessageAction(message: Message, action: String) {
+        when (action) {
+            "edit" -> {
+                // Mostrar un diálogo para editar el mensaje
+                val editDialog = EditMessageFragment(message) { updatedMessage ->
+                    messageViewModel.updateMessage(updatedMessage)
+                }
+                editDialog.show(parentFragmentManager, "EditMessageDialogFragment")
+            }
+            "delete" -> {
+                // Mostrar una confirmación para eliminar el mensaje
+                messageViewModel.deleteMessage(message)
+            }
+        }
+    }
+
 
     private fun status(status: String) {
         currentUser?.let { userViewModel.updateUserInfo(it.copy(status = status)) }

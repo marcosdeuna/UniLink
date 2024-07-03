@@ -2,6 +2,7 @@ package com.marcosdeuna.unilink.ui.post
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
@@ -26,8 +27,11 @@ import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.data.model.Token
 import com.marcosdeuna.unilink.databinding.FragmentListPostBinding
 import com.marcosdeuna.unilink.ui.notifications.TokenViewModel
@@ -73,7 +77,7 @@ class ListPostFragment : Fragment() {
             },
             onDeleteClicked = { position, post ->
                 // Acción al hacer clic en eliminar
-                postViewModel.deletePost(post)
+                showDeleteConfirmationDialog(post)
             },
             onSendClicked = { position, post ->
                 // Acción al hacer clic en enviar
@@ -168,22 +172,6 @@ class ListPostFragment : Fragment() {
         setupViews()
         setUpSpinner()
 
-        binding.eliminarCuenta.setOnClickListener {
-
-            authViewModel.getUserSession { user ->
-                for (post in adapter.getPosts()) {
-                    if(post.userId == user?.id){
-                        postViewModel.deletePost(post)
-                    }
-                }
-                user?.let {
-                    userViewModel.deleteUser(it)
-                }
-            }
-            authViewModel.logout()
-            authViewModel.deleteAccount()
-            findNavController().navigate(R.id.action_postFragment_to_loginFragment)
-        }
 
         binding.sorted.setOnClickListener {
             binding.sortModal.visibility = View.VISIBLE
@@ -255,16 +243,21 @@ class ListPostFragment : Fragment() {
         // Configurar la acción de la foto de perfil
         binding.profilePicture.setOnClickListener {
             binding.profileModal.visibility = View.VISIBLE
+            binding.aux.visibility = View.VISIBLE
         }
 
         binding.cerrarModal.setOnClickListener {
             binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
+        }
+
+        binding.calendar.setOnClickListener {
+            findNavController().navigate(R.id.action_postFragment_to_calendarFragment)
         }
 
         // Configurar la acción del botón de cerrar sesión
         binding.logoutButton.setOnClickListener {
-            authViewModel.logout()
-            findNavController().navigate(R.id.action_postFragment_to_loginFragment)
+            showLogoutConfirmationDialog()
         }
 
         binding.seeProfileButton.setOnClickListener {
@@ -314,7 +307,50 @@ class ListPostFragment : Fragment() {
         binding.cancelButton.setOnClickListener {
             binding.sortModal.visibility = View.GONE
         }
+
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_postFragment_to_settingsFragment)
+        }
+
+        binding.recyclerViewPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                // Obtener el LayoutManager
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+
+                // Verificar si el primer ítem visible es el primer ítem de la lista y si estamos desplazándonos hacia arriba
+                if (layoutManager.findFirstVisibleItemPosition() == 0 && dy < 0) {
+                    postViewModel.getPosts()
+                }
+            }
+        })
+
+        binding.aux.setOnClickListener{
+            binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
+        }
+
+
     }
+
+    private fun showLogoutConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmación")
+            .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+            .setPositiveButton("Sí") { dialog, which ->
+                FirebaseMessaging.getInstance().deleteToken()
+                    .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isSuccessful) {
+                            authViewModel.logout()
+                            findNavController().navigate(R.id.action_postFragment_to_loginFragment)
+                        }
+                    }
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
     private fun hasLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
@@ -353,6 +389,7 @@ class ListPostFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        binding.aux.visibility = View.GONE
         binding.spinnerCategory.setSelection(0)
         binding.searchBox.setText("")
         binding.bottomNavigation.menu[0].isChecked = true
@@ -420,6 +457,17 @@ class ListPostFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun showDeleteConfirmationDialog(post: Post) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmación")
+            .setMessage("¿Estás seguro de que deseas eliminar este post?")
+            .setPositiveButton("Sí") { dialog, which ->
+                postViewModel.deletePost(post)
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
 

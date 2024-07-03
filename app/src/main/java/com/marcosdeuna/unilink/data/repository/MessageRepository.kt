@@ -7,8 +7,13 @@ interface MessageRepository {
 
     fun sendMessage(message: Message, result: (UIState<String>) -> Unit)
     fun getMessages(myId: String, userId: String, result: (UIState<List<Message>>) -> Unit)
+
+    fun getAllMessages(result: (UIState<List<Message>>) -> Unit)
     fun deleteMessage(message: Message, result: (UIState<String>) -> Unit)
 
+    fun deleteMessageByUserReceiver(userId: String, result: (UIState<String>) -> Unit)
+
+    fun deleteMessageByUserSender(userId: String, result: (UIState<String>) -> Unit)
     fun updateMessage(message: Message, result: (UIState<String>) -> Unit)
 
 }

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    style="@style/CustomEditTextStyle"
+    android:elevation="2dp"
+    android:layout_margin="8dp">
+
+    <!-- Title and clock container -->
+    <LinearLayout
+        android:id="@+id/titleClockContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/eventTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Titulo"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/clockTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:00 PM"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/eventLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:textStyle="italic"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_below="@id/titleClockContainer"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/eventDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description "
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_below="@id/eventLocation"
+        android:layout_marginTop="4dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:layout_below="@id/eventDescription"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_edit"
+            android:paddingStart="16dp"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_delete"
+            android:paddingEnd="16dp"
+            app:tint="@color/rojo1" />
+
+    </LinearLayout>
+
+</RelativeLayout>

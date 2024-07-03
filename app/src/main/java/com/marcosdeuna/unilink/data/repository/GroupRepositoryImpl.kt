@@ -4,6 +4,7 @@ import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import com.marcosdeuna.unilink.data.model.Group
+import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.util.UIState
 
 class GroupRepositoryImpl(val  database: FirebaseFirestore, val storageReference: StorageReference): GroupRepository {
@@ -68,4 +69,21 @@ class GroupRepositoryImpl(val  database: FirebaseFirestore, val storageReference
                 result(UIState.Error(exception.message.toString()))
             }
     }
+
+    override fun deleteGroupByMember(user: User, result: (UIState<String>) -> Unit) {
+        database.collection("groups")
+            .whereArrayContains("members", user.id)
+            .get()
+            .addOnSuccessListener { resultData ->
+                resultData.documents.forEach { document ->
+                    document.reference.delete()
+                }
+                result(UIState.Success("${resultData.size()}"))
+            }
+            .addOnFailureListener { exception ->
+                result(UIState.Error(exception.message.toString()))
+            }
+    }
+
+
 }

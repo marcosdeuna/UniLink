@@ -37,4 +37,15 @@ class TokenViewModel @Inject constructor(
             _saveToken.value = result
         }
     }
+
+    private val _deleteToken = MutableLiveData<UIState<String>>()
+
+    val deleteToken: LiveData<UIState<String>>
+        get() = _deleteToken
+
+    fun deleteToken(token: Token) {
+        tokenRepository.deleteToken(token) { result ->
+            _deleteToken.value = result
+        }
+    }
 }

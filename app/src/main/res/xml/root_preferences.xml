@@ -1,0 +1,61 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <Preference
+        app:key="back_button"
+        app:title="Volver"
+        android:icon="@drawable/ic_arrow"/>
+
+    <!-- Gestión de Permisos -->
+    <PreferenceCategory app:title="Gestión de Permisos" >
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="Notificaciones"
+            android:persistent="true"
+            app:summary="Permitir notificaciones de la aplicación"/>
+
+        <SwitchPreferenceCompat
+            app:key="location_permission"
+            app:title="Permiso de Localización"
+            android:persistent="true"
+            app:summary="Gestionar permiso de acceso a la localización"/>
+
+        <SwitchPreferenceCompat
+            app:key="gallery_permission"
+            app:title="Permiso de Galería"
+            android:persistent="true"
+            app:summary="Gestionar permiso de acceso a la galería" />
+
+    </PreferenceCategory>
+
+    <!-- Políticas y Términos -->
+    <PreferenceCategory app:title="Políticas y Términos">
+        <Preference
+            app:key="privacy_policy"
+            app:title="Política de Privacidad"
+            app:summary="Revisar la política de privacidad" />
+
+        <Preference
+            app:key="terms_of_use"
+            app:title="Términos de Uso"
+            app:summary="Revisar los términos de uso" />
+    </PreferenceCategory>
+
+    <!-- Gestión de Cuenta -->
+    <PreferenceCategory app:title="Gestión de Cuenta">
+        <Preference
+            app:key="delete_account"
+            app:title="Eliminar Cuenta"
+            app:summary="Eliminar permanentemente tu cuenta" />
+    </PreferenceCategory>
+
+    <!-- Ayuda y Soporte -->
+    <PreferenceCategory app:title="Ayuda y Soporte">
+        <Preference
+            app:key="contact_support"
+            app:title="Contactar Soporte"
+            app:summary="Hacer una consulta al soporte técnico" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

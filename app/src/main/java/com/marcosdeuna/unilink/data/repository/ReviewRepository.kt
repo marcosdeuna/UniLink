@@ -15,5 +15,7 @@ interface ReviewRepository {
 
     fun deleteReview(id: String, result: (UIState<String>) -> Unit)
 
+    fun deleteReviewByUser(user: String, result: (UIState<String>) -> Unit)
+
     fun getReviewsByMarkerId(markerId: String, result: (UIState<List<Review>>) -> Unit)
 }

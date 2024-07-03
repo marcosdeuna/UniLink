@@ -2,9 +2,12 @@ package com.marcosdeuna.unilink.data.repository
 
 import android.net.Uri
 import com.marcosdeuna.unilink.data.model.Post
+import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.util.UIState
 
 interface PostRepository {
+
+    fun deletePostsByUser(user: User, result: (UIState<String>) -> Unit)
     fun getPosts(result: (UIState<List<Post>>) -> Unit)
     fun addPost(post: Post, result: (UIState<String>) -> Unit)
     fun updatePost(post: Post, result: (UIState<String>) -> Unit)

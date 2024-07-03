@@ -62,12 +62,12 @@ class RegisterFragment : Fragment() {
 
         // Open the privacy policy URL when the text view is clicked
         binding.textViewPrivacyPolicy.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://doc-hosting.flycricket.io/unilink-privacy-policy/0e6dbac1-b41a-449e-833a-9cdc5a3b5301/privacy"))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://doc-hosting.flycricket.io/unilink-privacy-policy/9854af3b-0dc3-4113-b5be-f6ba4a371ae8/privacy"))
             startActivity(intent)
         }
 
         binding.textViewTermsAndConditions.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://doc-hosting.flycricket.io/unilink-terms-of-use/5d60f350-554b-422f-aba2-23c359c44aef/terms"))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://doc-hosting.flycricket.io/unilink-terms-of-use/93d1a9e2-9398-4d4c-bfa8-fedf96c21cee/terms"))
             startActivity(intent)
         }
 

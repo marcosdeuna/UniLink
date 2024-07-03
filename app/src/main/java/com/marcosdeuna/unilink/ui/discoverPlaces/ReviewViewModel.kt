@@ -3,6 +3,7 @@ package com.marcosdeuna.unilink.ui.discoverPlaces
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.marcosdeuna.unilink.data.model.Review
+import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.data.repository.ReviewRepository
 import com.marcosdeuna.unilink.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +41,13 @@ class ReviewViewModel @Inject constructor( val repository: ReviewRepository): Vi
     fun deleteReview(review: Review){
         _deleteReview.postValue(UIState.Loading)
         repository.deleteReview(review.id){
+            _deleteReview.postValue(it)
+        }
+    }
+
+    fun deleteReviewByUser(user: User){
+        _deleteReview.postValue(UIState.Loading)
+        repository.deleteReviewByUser(user.id){
             _deleteReview.postValue(it)
         }
     }

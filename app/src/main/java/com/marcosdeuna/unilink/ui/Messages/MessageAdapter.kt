@@ -4,8 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.data.model.Message
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.ChatItemLeftBinding
@@ -19,6 +22,7 @@ class MessageAdapter(
     private val list: List<Message>,
     private val image:String,
     private val currentUser: User,
+    private val onMessageAction: (Message, String) -> Unit,
     private val MSG_TYPE_LEFT: Int = 0,
     private val MSG_TYPE_RIGHT: Int = 1
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -75,6 +79,28 @@ class MessageAdapter(
             }
         }
 
+        if (currentMessage.senderId == currentUser.id) {
+            holder.itemView.setOnLongClickListener {
+                showPopupMenu(holder.itemView, currentMessage)
+                true
+            }
+        }
+
+    }
+
+    private fun showPopupMenu(view: View, message: Message) {
+        val popupMenuView = LayoutInflater.from(context).inflate(R.layout.message_options_menu, null)
+        val popupWindow = PopupWindow(popupMenuView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.showAsDropDown(view, view.width / 2 - popupWindow.width / 2, -view.height - popupWindow.height)
+
+        popupMenuView.findViewById<View>(R.id.edit_message).setOnClickListener {
+            onMessageAction(message, "edit")
+            popupWindow.dismiss()
+        }
+        popupMenuView.findViewById<View>(R.id.delete_message).setOnClickListener {
+            onMessageAction(message, "delete")
+            popupWindow.dismiss()
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -50,6 +50,13 @@ class GroupViewModel @Inject constructor( val repository: GroupRepository): View
         }
     }
 
+    fun deleteGrupByMember(user: User){
+        _deleteGroup.postValue(UIState.Loading)
+        repository.deleteGroupByMember(user){
+            _deleteGroup.postValue(it)
+        }
+    }
+
     private val _updateGroup = MutableLiveData<UIState<String>>()
 
     val updateGroup: LiveData<UIState<String>>
@@ -87,4 +94,5 @@ class GroupViewModel @Inject constructor( val repository: GroupRepository): View
             }
         }
     }
+
 }

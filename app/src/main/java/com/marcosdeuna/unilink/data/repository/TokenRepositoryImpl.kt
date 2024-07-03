@@ -30,4 +30,15 @@ class TokenRepositoryImpl (val database: FirebaseFirestore): TokenRepository {
 
     }
 
+    override fun deleteToken(token: Token, result: (UIState<String>) -> Unit) {
+        val document = database.collection("tokens").document(token.userId)
+        document.delete()
+            .addOnSuccessListener {
+                result(UIState.Success("Token eliminado"))
+            }
+            .addOnFailureListener { exception ->
+                result(UIState.Error(exception.message.toString()))
+            }
+    }
+
 }

@@ -53,10 +53,9 @@ class UserRepositoryImpl (val database: FirebaseFirestore,
     }
 
     override fun deleteUser(user: User, result: (UIState<String>) -> Unit) {
-        val document = database.collection(FirestoreCollection.USER).document(user.id)
-        document
+        database.collection(FirestoreCollection.USER).document(user.id)
             .delete()
-            .addOnCompleteListener {
+            .addOnSuccessListener {
                 result.invoke(UIState.Success("Usuario eliminado correctamente"))
             }
             .addOnFailureListener {

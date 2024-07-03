@@ -3,6 +3,7 @@ package com.marcosdeuna.unilink.ui.discoverPeople
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.google.firebase.messaging.FirebaseMessaging
 import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.data.model.Group
 import com.marcosdeuna.unilink.data.model.User
@@ -114,6 +116,7 @@ class DiscoverPeopleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.profileModal.visibility = View.GONE
+        binding.aux.visibility = View.GONE
         binding.refresh.setOnClickListener {
             userViewModel.getUsers()
             if(adminGroupList.isNotEmpty()){
@@ -146,10 +149,16 @@ class DiscoverPeopleFragment : Fragment() {
             if (user != null) {
                 if(user.description.equals("") || user.age == 0 || user.socialPictures.isEmpty() || user.genre.equals("")){
                     findNavController().navigate(R.id.action_discoverPeopleFragment_to_editUserFragment)
-                    toast("Por favor completa tu perfil con tus datos")
+                    toast("Por favor completa tu perfil con tus datos e imagenes")
                 }
             }
         }
+        binding.aux.setOnClickListener{
+            binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
+        }
+
+
         userViewModel.getUsers()
         userViewModel.users.observe(viewLifecycleOwner) { state ->
             when(state){
@@ -160,7 +169,7 @@ class DiscoverPeopleFragment : Fragment() {
 
                     for (user in state.data){
                         authViewModel.getUserSession { currentUser ->
-                            if (currentUser?.id != user.id) {
+                            if (currentUser?.id != user.id && user.socialPictures.isNotEmpty()) {
                                 list.add(user)
                             }
                         }
@@ -269,37 +278,29 @@ class DiscoverPeopleFragment : Fragment() {
 
         binding.profilePicture.setOnClickListener {
             binding.profileModal.visibility = View.VISIBLE
+            binding.aux.visibility = View.VISIBLE
         }
 
         binding.cerrarModal.setOnClickListener {
             binding.profileModal.visibility = View.GONE
+            binding.aux.visibility = View.GONE
         }
 
         // Configurar la acción del botón de cerrar sesión
         binding.logoutButton.setOnClickListener {
-            authViewModel.logout()
-            findNavController().navigate(R.id.action_discoverPeopleFragment_to_loginFragment)
+            showLogoutConfirmationDialog()
+        }
+
+        binding.calendar.setOnClickListener {
+            findNavController().navigate(R.id.action_discoverPeopleFragment_to_calendarFragment)
         }
 
         binding.seeProfileButton.setOnClickListener {
             findNavController().navigate(R.id.action_discoverPeopleFragment_to_detailUserFragment)
         }
 
-        binding.eliminarCuenta.setOnClickListener {
-
-            authViewModel.getUserSession { user ->
-                for (post in adapter.getPosts()) {
-                    if(post.userId == user?.id){
-                        postViewModel.deletePost(post)
-                    }
-                }
-                user?.let {
-                    userViewModel.deleteUser(it)
-                }
-            }
-            authViewModel.logout()
-            authViewModel.deleteAccount()
-            findNavController().navigate(R.id.action_discoverPeopleFragment_to_loginFragment)
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_discoverPeopleFragment_to_settingsFragment)
         }
 
         binding.searchBox.addTextChangedListener(afterTextChanged = {
@@ -875,7 +876,7 @@ class DiscoverPeopleFragment : Fragment() {
 
                         },
                         onDeleteClicked = { position, group ->
-                            groupViewModel.deleteGroup(group)
+                            showDeleteConfirmationDialog(group)
 
                             groupViewModel.deleteGroup.observe(viewLifecycleOwner) { state ->
                                 when (state) {
@@ -926,6 +927,36 @@ class DiscoverPeopleFragment : Fragment() {
         }
 
 
+    }
+
+    private fun showDeleteConfirmationDialog(group: Group) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar grupo")
+            .setMessage("¿Estás seguro de que deseas eliminar este grupo?")
+            .setPositiveButton("Sí") { _, _ ->
+                groupViewModel.deleteGroup(group)
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmación")
+            .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+            .setPositiveButton("Sí") { dialog, which ->
+                FirebaseMessaging.getInstance().deleteToken()
+                    .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isSuccessful) {
+                            authViewModel.logout()
+                            findNavController().navigate(R.id.action_discoverPeopleFragment_to_loginFragment)
+                        }
+                    }
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     override fun onStart() {

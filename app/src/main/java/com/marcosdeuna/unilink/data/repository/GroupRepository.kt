@@ -2,6 +2,7 @@ package com.marcosdeuna.unilink.data.repository
 
 import android.net.Uri
 import com.marcosdeuna.unilink.data.model.Group
+import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.util.UIState
 
 interface GroupRepository {
@@ -12,4 +13,5 @@ interface GroupRepository {
     fun deleteGroup(group: Group, result: (UIState<String>) -> Unit)
 
     suspend fun uploadGroupPicture(imageUri: Uri, result: (UIState<String>) -> Unit)
+    fun deleteGroupByMember(user: User, result: (UIState<String>) -> Unit)
 }

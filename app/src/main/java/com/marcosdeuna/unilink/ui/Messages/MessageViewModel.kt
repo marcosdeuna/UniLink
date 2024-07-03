@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.marcosdeuna.unilink.data.model.Message
+import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.data.repository.MessageRepository
 import com.marcosdeuna.unilink.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,13 @@ class MessageViewModel @Inject constructor(
     fun getMessages(myId: String, userId: String) {
         _messages.value = UIState.Loading
         repository.getMessages(myId, userId) { result ->
+            _messages.value = result
+        }
+    }
+
+    fun getAllMessages() {
+        _messages.value = UIState.Loading
+        repository.getAllMessages { result ->
             _messages.value = result
         }
     }
@@ -44,6 +52,32 @@ class MessageViewModel @Inject constructor(
         _updateMessage.value = UIState.Loading
         repository.updateMessage(message) { result ->
             _updateMessage.value = result
+        }
+    }
+
+    private val _deleteMessage = MutableLiveData<UIState<String>>()
+
+    val deleteMessage: LiveData<UIState<String>>
+        get() = _deleteMessage
+
+    fun deleteMessage(message: Message) {
+        _deleteMessage.value = UIState.Loading
+        repository.deleteMessage(message) { result ->
+            _deleteMessage.value = result
+        }
+    }
+
+    fun deleteMessageByUserReceiver(user: User) {
+        _deleteMessage.value = UIState.Loading
+        repository.deleteMessageByUserReceiver(user.id) { result ->
+            _deleteMessage.value = result
+        }
+    }
+
+    fun deleteMessageByUserSender(user: User) {
+        _deleteMessage.value = UIState.Loading
+        repository.deleteMessageByUserSender(user.id) { result ->
+            _deleteMessage.value = result
         }
     }
 

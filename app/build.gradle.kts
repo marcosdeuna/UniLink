@@ -61,6 +61,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -82,6 +85,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
     implementation("org.osmdroid:osmdroid-android:6.0.3")
+    implementation("com.github.prolificinteractive:material-calendarview:1.4.2")
 
 }
 kapt {

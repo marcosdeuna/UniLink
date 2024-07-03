@@ -15,6 +15,8 @@ interface MarkersRepository {
 
     fun deleteMarker(id: String, result: (UIState<String>) -> Unit)
 
+    fun deleteMarkerByUser(userId: String, result: (UIState<String>) -> Unit)
+
     suspend fun uploadMarkerPicture(imageUri: Uri, result: (UIState<String>) -> Unit)
 
 }

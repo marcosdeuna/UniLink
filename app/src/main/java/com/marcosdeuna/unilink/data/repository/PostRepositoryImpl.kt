@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.marcosdeuna.unilink.data.model.Post
+import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.util.FirebaseStorageConstant
 import com.marcosdeuna.unilink.util.FirestoreCollection
 import com.marcosdeuna.unilink.util.UIState
@@ -14,6 +15,22 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class PostRepositoryImpl (val  database: FirebaseFirestore, val storageReference: StorageReference): PostRepository {
+    override fun deletePostsByUser(user: User, result: (UIState<String>) -> Unit) {
+        database.collection(FirestoreCollection.POST)
+            .whereEqualTo("userId", user.id)
+            .get()
+            .addOnSuccessListener {
+                querySnapshot ->
+                querySnapshot.documents.forEach {
+                    it.reference.delete()
+                }
+                result.invoke(UIState.Success("${querySnapshot.size()}"))
+            }
+            .addOnFailureListener {
+                result.invoke(UIState.Error(it.message.toString()))
+            }
+    }
+
     override fun getPosts(result: (UIState<List<Post>>) -> Unit) {
         database.collection(FirestoreCollection.POST)
             .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)

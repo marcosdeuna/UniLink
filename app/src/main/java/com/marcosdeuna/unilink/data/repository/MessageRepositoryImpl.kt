@@ -48,12 +48,61 @@ class MessageRepositoryImpl (val database: FirebaseFirestore): MessageRepository
             }
     }
 
+    override fun getAllMessages(result: (UIState<List<Message>>) -> Unit) {
+        database.collection("messages")
+            .orderBy("timestamp")
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    result(UIState.Error(error.message.toString()))
+                    return@addSnapshotListener
+                }
+                val messages = mutableListOf<Message>()
+                value?.documents?.forEach { document ->
+                    val message = document.toObject(Message::class.java)
+                    if (message != null) {
+                        messages.add(message)
+                    }
+                }
+                result(UIState.Success(messages))
+            }
+    }
+
     override fun deleteMessage(message: Message, result: (UIState<String>) -> Unit) {
         database.collection("messages")
             .document(message.id)
             .delete()
             .addOnSuccessListener {
                 result(UIState.Success("Mensaje Eliminado Exitosamente!"))
+            }
+            .addOnFailureListener { exception ->
+                result(UIState.Error(exception.message.toString()))
+            }
+    }
+
+    override fun deleteMessageByUserReceiver(userId: String, result: (UIState<String>) -> Unit) {
+        database.collection("messages")
+            .whereEqualTo("receiverId", userId)
+            .get()
+            .addOnSuccessListener { resultData ->
+                resultData.documents.forEach { document ->
+                    document.reference.delete()
+                }
+                result(UIState.Success("${resultData.size()}"))
+            }
+            .addOnFailureListener { exception ->
+                result(UIState.Error(exception.message.toString()))
+            }
+    }
+
+    override fun deleteMessageByUserSender(userId: String, result: (UIState<String>) -> Unit) {
+        database.collection("messages")
+            .whereEqualTo("senderId", userId)
+            .get()
+            .addOnSuccessListener { resultData ->
+                resultData.documents.forEach { document ->
+                    document.reference.delete()
+                }
+                result(UIState.Success("${resultData.size()}"))
             }
             .addOnFailureListener { exception ->
                 result(UIState.Error(exception.message.toString()))

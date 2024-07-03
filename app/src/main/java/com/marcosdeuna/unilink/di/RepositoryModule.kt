@@ -7,6 +7,8 @@ import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.marcosdeuna.unilink.data.repository.AuthRepository
 import com.marcosdeuna.unilink.data.repository.AuthRepositoryImpl
+import com.marcosdeuna.unilink.data.repository.EventsRepository
+import com.marcosdeuna.unilink.data.repository.EventsRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.GroupRepository
 import com.marcosdeuna.unilink.data.repository.GroupRepositoryImpl
 import com.marcosdeuna.unilink.data.repository.MarkersRepository
@@ -76,5 +78,11 @@ object RepositoryModule {
     @Singleton
     fun provideReviewRepository(database: FirebaseFirestore): ReviewRepository {
         return ReviewRepositoryImpl(database)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventsRepository(database: FirebaseFirestore): EventsRepository {
+        return EventsRepositoryImpl(database)
     }
 }

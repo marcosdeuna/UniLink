@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.marcosdeuna.unilink.data.model.Post
+import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.data.repository.PostRepository
 import com.marcosdeuna.unilink.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,6 +60,13 @@ class PostViewModel @Inject constructor(
     fun deletePost(post: Post) {
         _deletePost.value = UIState.Loading
         postRepository.deletePost(post) { result ->
+            _deletePost.value = result
+        }
+    }
+
+    fun deletePostByUser(user: User) {
+        _deletePost.value = UIState.Loading
+        postRepository.deletePostsByUser(user) { result ->
             _deletePost.value = result
         }
     }

@@ -94,11 +94,11 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="10dp"
         android:text="Registro"
         android:textStyle="bold"
         android:textColor="@color/rojo1"
-        android:textSize="40dp"
+        android:textSize="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -131,15 +131,15 @@
         android:id="@+id/profile_image_container"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_centerInParent="true"
             android:contentDescription="Profile Image"
             android:scaleType="fitCenter"
@@ -213,7 +213,7 @@
                 android:id="@+id/text_view_privacy_policy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Click para aceptar la Política de Privacidad "
+                android:text="Click para aceptar la P̲o̲l̲í̲t̲i̲c̲a̲ ̲d̲e̲ ̲P̲r̲i̲v̲a̲c̲i̲d̲a̲d̲ "
                 android:textColor="@color/rojo1"
                 android:textSize="14dp" />
 
@@ -221,7 +221,7 @@
                 android:id="@+id/text_view_terms_and_conditions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="y los Términos y Condiciones"
+                android:text="y los T̲é̲r̲m̲i̲n̲o̲s̲ ̲y̲ ̲C̲o̲n̲d̲i̲c̲i̲o̲n̲e̲s̲"
                 android:textColor="@color/rojo1"
                 android:textSize="14dp" />
 

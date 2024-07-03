@@ -166,6 +166,7 @@
     <RelativeLayout
         android:id="@+id/button_layout"
         android:layout_width="0dp"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -179,20 +180,19 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_centerInParent="true"
-            android:layout_marginTop="28dp"
             android:elevation="10dp"
             android:indeterminateTint="@color/white"
             android:visibility="invisible" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/button_submit"
             android:layout_width="370dp"
             android:layout_height="45dp"
-            android:text="Publicar"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/rojo1"
+            android:gravity="center"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="40dp"/>
+            android:backgroundTint="@color/rojo1"
+            android:text="Publicar"
+            android:textColor="@color/white" />
     </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

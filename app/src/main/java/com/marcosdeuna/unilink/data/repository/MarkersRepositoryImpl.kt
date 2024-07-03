@@ -60,6 +60,22 @@ class MarkersRepositoryImpl (val database: FirebaseFirestore, val storageReferen
         }
     }
 
+    override fun deleteMarkerByUser(userId: String, result: (UIState<String>) -> Unit) {
+        database.collection("markers").whereEqualTo("userId", userId).get().addOnSuccessListener { querySnapshot ->
+            querySnapshot.documents.forEach { documentSnapshot ->
+                database.collection("markers").whereEqualTo("markerId", documentSnapshot.id).get().addOnSuccessListener { querySnapshot ->
+                    querySnapshot.documents.forEach { documentSnapshot ->
+                        documentSnapshot.reference.delete()
+                    }
+                }
+                documentSnapshot.reference.delete()
+            }
+            result(UIState.Success("${querySnapshot.size()}"))
+        }.addOnFailureListener { exception ->
+            result(UIState.Error(exception.message.toString()))
+        }
+    }
+
     override suspend fun uploadMarkerPicture(imageUri: Uri, result: (UIState<String>) -> Unit) {
         try{
             val uri: Uri = withContext(Dispatchers.IO){
