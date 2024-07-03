@@ -11,7 +11,7 @@ interface UserRepository {
 
     fun deleteUser(user: User, result: (UIState<String>) -> Unit)
 
-    fun existeUserName(userName: String, email: String, result: (UIState<Boolean>) -> Unit)
+    fun existeUserName(userName: String, userId: String, result: (UIState<Boolean>) -> Unit)
 
     fun storeSessioon(id: String, result: (User?) -> Unit)
 

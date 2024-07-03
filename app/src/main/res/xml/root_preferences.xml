@@ -45,6 +45,16 @@
     <!-- Gestión de Cuenta -->
     <PreferenceCategory app:title="Gestión de Cuenta">
         <Preference
+            app:key="update_email"
+            app:title="Modificar Correo Electrónico"
+            app:summary="Cambiar tu correo electrónico actual" />
+
+        <Preference
+            app:key="update_password"
+            app:title="Modificar Contraseña"
+            app:summary="Cambiar tu contraseña actual" />
+
+        <Preference
             app:key="delete_account"
             app:title="Eliminar Cuenta"
             app:summary="Eliminar permanentemente tu cuenta" />

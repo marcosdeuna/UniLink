@@ -108,8 +108,8 @@ class MarkersViewModel @Inject constructor( val repository: MarkersRepository) :
                             result.invoke(UIState.Error(uploadResult.exception))
                         }
 
-                        UIState.Empty -> TODO()
-                        UIState.Loading -> TODO()
+                        UIState.Empty -> {}
+                        UIState.Loading -> {}
                     }
                 }
             }

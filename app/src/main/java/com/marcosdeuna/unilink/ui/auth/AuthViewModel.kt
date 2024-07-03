@@ -69,6 +69,20 @@ class AuthViewModel @Inject constructor( val repository: AuthRepository) : ViewM
         }
     }
 
+    fun updateEmail(password: String, email: String, result: (UIState<String>) -> Unit){
+        result.invoke(UIState.Loading)
+        repository.updateEmail(currentPassword =  password, newEmail = email){
+            result.invoke(it)
+        }
+    }
+
+    fun updatePassword(password: String, newPassword: String, result: (UIState<String>) -> Unit){
+        result.invoke(UIState.Loading)
+        repository.updatePassword(currentPassword = password, newPassword = newPassword){
+            result.invoke(it)
+        }
+    }
+
     fun getUserSession(result: (User?) -> Unit){
         repository.getUserSession(result)
     }

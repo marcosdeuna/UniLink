@@ -87,8 +87,8 @@ class GroupViewModel @Inject constructor( val repository: GroupRepository): View
                             result.invoke(UIState.Error(uploadResult.exception))
                         }
 
-                        UIState.Empty -> TODO()
-                        UIState.Loading -> TODO()
+                        UIState.Empty ->{}
+                        UIState.Loading -> {}
                     }
                 }
             }

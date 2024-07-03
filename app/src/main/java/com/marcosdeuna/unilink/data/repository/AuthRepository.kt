@@ -22,5 +22,7 @@ interface AuthRepository {
 
     fun deleteAccount(result: (UIState<String>) -> Unit)
 
+    fun updatePassword(currentPassword: String, newPassword: String, result: (UIState<String>) -> Unit)
+    fun updateEmail(currentPassword: String, newEmail: String, result: (UIState<String>) -> Unit)
     suspend fun uploadProfilePicture(imageUri: Uri, result: (UIState<String>) -> Unit)
 }

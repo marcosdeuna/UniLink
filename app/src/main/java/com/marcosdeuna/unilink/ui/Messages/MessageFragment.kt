@@ -139,10 +139,8 @@ class MessageFragment : Fragment() {
                     toast(result.exception)
                 }
 
-                UIState.Empty -> TODO()
-                is UIState.Error -> TODO()
-                UIState.Loading -> TODO()
-                is UIState.Success -> TODO()
+                UIState.Empty -> {}
+                UIState.Loading -> {}
             }
         }
 
@@ -176,10 +174,8 @@ class MessageFragment : Fragment() {
                     toast(result.exception)
                 }
 
-                UIState.Empty -> TODO()
-                is UIState.Error -> TODO()
-                UIState.Loading -> TODO()
-                is UIState.Success -> TODO()
+                UIState.Empty -> {}
+                UIState.Loading -> {}
             }
         }
 

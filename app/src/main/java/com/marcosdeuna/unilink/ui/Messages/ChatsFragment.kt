@@ -197,10 +197,8 @@ class ChatsFragment : Fragment() {
                     toast(result.exception)
                 }
 
-                UIState.Empty -> TODO()
-                is UIState.Error -> TODO()
-                UIState.Loading -> TODO()
-                is UIState.Success -> TODO()
+                UIState.Empty -> {}
+                UIState.Loading -> {}
             }
         }
         userViewModel.observeUsers()

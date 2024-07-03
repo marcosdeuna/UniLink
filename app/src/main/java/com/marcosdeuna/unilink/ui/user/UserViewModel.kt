@@ -73,8 +73,8 @@ class UserViewModel @Inject constructor( val repository: UserRepository): ViewMo
         }
     }
 
-    fun existeUserName(userName: String, email: String, result: (UIState<Boolean>) -> Unit){
-        repository.existeUserName(userName, email){
+    fun existeUserName(userName: String, userId:String,  result: (UIState<Boolean>) -> Unit){
+        repository.existeUserName(userName, userId){
             result.invoke(it)
         }
     }
@@ -97,8 +97,8 @@ class UserViewModel @Inject constructor( val repository: UserRepository): ViewMo
                             result.invoke(UIState.Error(uploadResult.exception))
                         }
 
-                        UIState.Empty -> TODO()
-                        UIState.Loading -> TODO()
+                        UIState.Empty -> {}
+                        UIState.Loading -> {}
                     }
                 }
             }

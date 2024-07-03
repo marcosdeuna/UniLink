@@ -98,7 +98,7 @@ class RegisterFragment : Fragment() {
                                 binding.progressBar.show()
                             }
 
-                            UIState.Empty -> TODO()
+                            UIState.Empty -> {}
                         }
                     }
                 } else {
@@ -187,7 +187,7 @@ class RegisterFragment : Fragment() {
                     toast(state.exception)
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
     }
@@ -222,12 +222,16 @@ class RegisterFragment : Fragment() {
             isValid = false
             toast("Enter username")
         }else{
-            userViewModel.existeUserName(binding.editTextUsername.text.toString(), binding.editTextEmail.text.toString()){state ->
-                if(state is UIState.Success){
-                    if(state.data){
-                        isValid = false
-                        toast("El nombre de usuario ya existe")
-                    }
+            viewModel.getUserSession {
+                if(it?.userName != binding.editTextUsername.text.toString()){
+                    userViewModel.existeUserName(binding.editTextUsername.text.toString(), it?.id?:"", result = {state ->
+                        if(state is UIState.Success){
+                            if(state.data){
+                                isValid = false
+                                toast("Nombre de usuario ya existe")
+                            }
+                        }
+                    })
                 }
             }
         }

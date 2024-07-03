@@ -149,7 +149,7 @@ class CreatePostFragment : Fragment() {
                                     toast("Error al subir la imagen")
                                 }
 
-                                UIState.Empty -> TODO()
+                                UIState.Empty -> {}
                             }
                         }
                     }else{
@@ -207,7 +207,7 @@ class CreatePostFragment : Fragment() {
                     toast("Error al crear el post")
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
 
@@ -229,7 +229,7 @@ class CreatePostFragment : Fragment() {
                     toast("Error al editar el post")
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
     }
@@ -265,7 +265,7 @@ class CreatePostFragment : Fragment() {
                         binding.buttonSubmit.setText("Publicar")
                         toast("Error al subir la imagen")
                     }
-                    UIState.Empty -> TODO()
+                    UIState.Empty -> {}
                 }
             }
         }else{

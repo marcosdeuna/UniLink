@@ -63,16 +63,13 @@ class UserRepositoryImpl (val database: FirebaseFirestore,
             }
     }
 
-    override fun existeUserName(userName: String, email: String, result: (UIState<Boolean>) -> Unit) {
+    override fun existeUserName(userName: String, userId: String, result: (UIState<Boolean>) -> Unit) {
         database.collection(FirestoreCollection.USER)
             .whereEqualTo("userName", userName)
             .get()
             .addOnSuccessListener {
-                if (it.size() == 1 && it.documents[0].toObject(User::class.java)?.email == email){
-                    result.invoke(UIState.Success(false))
-                }else{
-                    result.invoke(UIState.Success(true))
-                }
+                val filteredList = it.toObjects(User::class.java).filter { it.id != userId }
+                result.invoke(UIState.Success(filteredList.isNotEmpty()))
             }
             .addOnFailureListener {
                 result.invoke(UIState.Error(it.message.toString()))

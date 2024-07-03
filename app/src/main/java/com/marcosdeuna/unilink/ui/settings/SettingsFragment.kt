@@ -122,6 +122,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         // Gestión de Cuenta
+
+        val updateEmailPref: Preference? = findPreference("update_email")
+        updateEmailPref?.setOnPreferenceClickListener {
+            showUpdateEmailDialog()
+            true
+        }
+
+        val updatePasswordPref: Preference? = findPreference("update_password")
+        updatePasswordPref?.setOnPreferenceClickListener {
+            showUpdatePasswordDialog()
+            true
+        }
         val deleteAccountPref: Preference? = findPreference("delete_account")
         deleteAccountPref?.setOnPreferenceClickListener {
             showDeleteAccountConfirmationDialog()
@@ -137,6 +149,96 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         checkPermission()
     }
+
+    // En tu SettingsFragment
+    private fun showUpdateEmailDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_update_email, null)
+        val currentPasswordEditText = dialogView.findViewById<EditText>(R.id.current_password_edit_text)
+        val newEmailEditText = dialogView.findViewById<EditText>(R.id.new_email_edit_text)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Actualizar Correo Electrónico")
+            .setView(dialogView)
+            .setPositiveButton("Guardar") { dialog, which ->
+                val currentPassword = currentPasswordEditText.text.toString().trim()
+                val newEmail = newEmailEditText.text.toString().trim()
+
+                if (currentPassword.isNotEmpty() && newEmail.isNotEmpty()) {
+                    authViewModel.updateEmail(currentPassword, newEmail) { result ->
+                        when (result) {
+                            is UIState.Success -> {
+                                userViewModel.updateUserInfo(currentUser?.copy(email = newEmail) ?: currentUser!!)
+                                MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Éxito")
+                                    .setMessage(result.data)
+                                    .setPositiveButton("OK", null)
+                                    .show()
+                            }
+                            is UIState.Error -> {
+                                showErrorDialog(result.exception ?: "Error al actualizar el correo electrónico")
+                            }
+                            UIState.Loading -> {
+                                // Puedes manejar el estado de carga si es necesario
+                            }
+
+                            UIState.Empty -> {}
+                        }
+                    }
+                } else {
+                    showErrorDialog("Por favor, completa todos los campos.")
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun showUpdatePasswordDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_update_password, null)
+        val currentPasswordEditText = dialogView.findViewById<EditText>(R.id.current_password_edit_text)
+        val newPasswordEditText = dialogView.findViewById<EditText>(R.id.new_password_edit_text)
+        val repeatNewPasswordEditText = dialogView.findViewById<EditText>(R.id.repeat_new_password_edit_text)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Actualizar Contraseña")
+            .setView(dialogView)
+            .setPositiveButton("Guardar") { dialog, which ->
+                val currentPassword = currentPasswordEditText.text.toString().trim()
+                val newPassword = newPasswordEditText.text.toString().trim()
+                val repeatNewPassword = repeatNewPasswordEditText.text.toString().trim()
+
+                if (currentPassword.isNotEmpty() && newPassword.isNotEmpty() && repeatNewPassword.isNotEmpty()) {
+                    if (newPassword == repeatNewPassword) {
+                        authViewModel.updatePassword(currentPassword, newPassword) { result ->
+                            when (result) {
+                                is UIState.Success -> {
+                                    userViewModel.updateUserInfo(currentUser?.copy(password = newPassword) ?: currentUser!!)
+                                    MaterialAlertDialogBuilder(requireContext())
+                                        .setTitle("Éxito")
+                                        .setMessage(result.data)
+                                        .setPositiveButton("OK", null)
+                                        .show()
+                                }
+                                is UIState.Error -> {
+                                    showErrorDialog(result.exception ?: "Error al actualizar la contraseña")
+                                }
+                                UIState.Loading -> {
+                                    // Puedes manejar el estado de carga si es necesario
+                                }
+
+                                UIState.Empty -> {}
+                            }
+                        }
+                    } else {
+                        showErrorDialog("Las nuevas contraseñas no coinciden.")
+                    }
+                } else {
+                    showErrorDialog("Por favor, completa todos los campos.")
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
 
     private fun requestPermission(permission: String) {
         if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
@@ -180,6 +282,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         showErrorDialog("Error al eliminar las publicaciones")
                     }
                 }
+
+                deleteUser()
             }
             .setNegativeButton("No", null)
             .show()
@@ -313,7 +417,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private suspend fun deleteUser(){
+    private fun deleteUser(){
         userViewModel.getUsers()
         userViewModel.users.observe(viewLifecycleOwner) { users ->
             if (users is UIState.Success) {
@@ -322,51 +426,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     lifecycleScope.launch { userViewModel.deleteUser(it) }
                 }
                 lifecycleScope.launch {
-                    deleteAccount()
+                    authViewModel.deleteAccount()
+
+                }
+                lifecycleScope.launch {
+                    FirebaseMessaging.getInstance().deleteToken()
+                        .addOnSuccessListener {
+                            authViewModel.logout()
+                            if (isAdded && !isDetached) {
+                                findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+                            }
+                        }
+                        .addOnFailureListener {
+                            showErrorDialog("Error al eliminar el token de Firebase")
+                        }
                 }
             } else if (users is UIState.Error) {
                 showErrorDialog("Error al obtener usuarios")
             }
-        }
-    }
-
-    private suspend fun deleteAccount() {
-        try {
-            lifecycleScope.launch {
-                authViewModel.deleteAccount()
-            }
-            authViewModel.deleteAccount.observe(viewLifecycleOwner) { state ->
-                when (state) {
-                    is UIState.Success -> {
-                        MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Cuenta Eliminada")
-                            .setMessage("Tu cuenta ha sido eliminada exitosamente.")
-                            .setPositiveButton("OK") { dialog, which ->
-                                lifecycleScope.launch {
-                                    FirebaseMessaging.getInstance().deleteToken()
-                                        .addOnSuccessListener {
-                                            authViewModel.logout()
-                                            if (isAdded && !isDetached) {
-                                                findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
-                                            }
-                                        }
-                                        .addOnFailureListener {
-                                            showErrorDialog("Error al eliminar el token de Firebase")
-                                        }
-                                }
-                            }
-                            .show()
-                    }
-                    is UIState.Error -> {
-                        showErrorDialog("Error al eliminar la cuenta")
-                    }
-
-                    UIState.Empty -> TODO()
-                    UIState.Loading -> TODO()
-                }
-            }
-        } catch (e: Exception) {
-            showErrorDialog("Error al eliminar el usuario o la cuenta")
         }
     }
 

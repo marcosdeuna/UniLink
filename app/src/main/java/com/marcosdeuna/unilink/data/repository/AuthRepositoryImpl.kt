@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -55,6 +56,8 @@ class AuthRepositoryImpl(
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(){
                 if (it.isSuccessful){
+                    val authuser = auth.currentUser
+                    authuser?.sendEmailVerification()
                     user.id = it.result?.user?.uid ?: ""
                     updateUserInfo(user){state ->
                         when(state){
@@ -70,8 +73,8 @@ class AuthRepositoryImpl(
                                 }
                             }
                             is UIState.Error -> result.invoke(UIState.Error(state.exception))
-                            UIState.Empty -> TODO()
-                            UIState.Loading -> TODO()
+                            UIState.Empty -> {}
+                            UIState.Loading -> {}
                         }
                     } //update user info (name, email, password, etc.
                 }else{
@@ -185,6 +188,76 @@ class AuthRepositoryImpl(
                 result.invoke(UIState.Error(it.localizedMessage?:"Error"))
             }
     }
+
+    override fun updatePassword(currentPassword: String, newPassword: String, result: (UIState<String>) -> Unit) {
+        val user = auth.currentUser
+        if (user != null) {
+            val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+            user.reauthenticate(credential)
+                .addOnSuccessListener {
+                    user.updatePassword(newPassword)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                result.invoke(UIState.Success("Contraseña actualizada correctamente"))
+                            } else {
+                                result.invoke(UIState.Error("Error al actualizar la contraseña"))
+                            }
+                        }
+                }
+                .addOnFailureListener { e ->
+                    result.invoke(UIState.Error("Error al reautenticar al usuario"))
+                }
+        } else {
+            result.invoke(UIState.Error("No se pudo obtener el usuario actual"))
+        }
+    }
+
+
+    override fun updateEmail(currentPassword: String, newEmail: String, result: (UIState<String>) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        if (user != null) {
+            // Obtener las credenciales para reautenticar al usuario
+            val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+
+            // Reautenticar al usuario con las credenciales actuales
+            user.reauthenticate(credential)
+                .addOnSuccessListener {
+                    // Envío de correo de verificación al nuevo correo electrónico
+                    auth.fetchSignInMethodsForEmail(newEmail).addOnCompleteListener { task ->
+                        if (task.isSuccessful && task.result?.signInMethods?.isEmpty() == true) {
+                            user.updateEmail(newEmail)
+                                .addOnCompleteListener { updateEmailTask ->
+                                    if (updateEmailTask.isSuccessful) {
+                                        user.sendEmailVerification()
+                                            .addOnCompleteListener { sendVerificationTask ->
+                                                if (sendVerificationTask.isSuccessful) {
+                                                    result.invoke(UIState.Success("Correo electrónico actualizado exitosamente. Verifica tu nuevo correo electrónico."))
+                                                } else {
+                                                    result.invoke(UIState.Error(sendVerificationTask.exception?.localizedMessage ?: "Error al enviar correo de verificación"))
+                                                }
+                                            }
+                                    } else {
+                                        result.invoke(UIState.Error(updateEmailTask.exception?.localizedMessage ?: "Error al actualizar el correo electrónico"))
+                                    }
+                                }
+                        } else {
+                            result.invoke(UIState.Error("El correo electrónico ya está en uso o no es válido"))
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // Error al reautenticar al usuario
+                    result.invoke(UIState.Error(e.localizedMessage ?: "Error al reautenticar al usuario"))
+                }
+        } else {
+            // Usuario no encontrado
+            result.invoke(UIState.Error("Usuario no encontrado"))
+        }
+    }
+
+
+
 
     override suspend fun uploadProfilePicture(imageUri: Uri, result: (UIState<String>) -> Unit) {
         try{

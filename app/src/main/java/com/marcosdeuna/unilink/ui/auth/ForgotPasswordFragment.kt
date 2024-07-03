@@ -77,7 +77,7 @@ class ForgotPasswordFragment : Fragment() {
                     toast(state.exception)
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
     }

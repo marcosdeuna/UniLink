@@ -124,7 +124,7 @@ class ListPostFragment : Fragment() {
                     toast(state.exception)
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
 
@@ -157,7 +157,7 @@ class ListPostFragment : Fragment() {
                     binding.progressBar.hide()
                     toast(state.exception)
                 }
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
 

@@ -237,7 +237,7 @@ class DiscoverPeopleFragment : Fragment() {
                     toast(state.exception)
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->

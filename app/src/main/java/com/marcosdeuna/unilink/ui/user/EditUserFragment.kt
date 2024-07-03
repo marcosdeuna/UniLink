@@ -60,7 +60,6 @@ class EditUserFragment : Fragment() {
 
         authViewModel.getUserSession { user ->
             binding.editTextUsername.setText(user?.userName)
-            binding.editTextEmail.setText(user?.email)
             binding.editTextName.setText(user?.firstName)
             binding.editTextLastName.setText(user?.lastName)
             binding.editTextCareer.setText(user?.career)
@@ -108,11 +107,10 @@ class EditUserFragment : Fragment() {
             if(validation()){
                 val firstName = binding.editTextName.text.toString()
                 val lastName = binding.editTextLastName.text.toString()
-                val email = binding.editTextEmail.text.toString()
                 val userName = binding.editTextUsername.text.toString()
                 val career = binding.editTextCareer.text.toString()
                 val description = binding.editTextDescription.text.toString()
-                val age = binding.editTextAge.text.toString().toInt()
+                val age = if (binding.editTextAge.text.isNotEmpty()) binding.editTextAge.text.toString().toInt() else 0
                 val genre = if(binding.radioButtonFemale.isChecked) "Mujer" else "Hombre"
 
 
@@ -120,9 +118,9 @@ class EditUserFragment : Fragment() {
                 authViewModel.getUserSession { user ->
                     user?.let { currentUser ->
                         val updatedUser = currentUser.copy(
+                            id = currentUser.id,
                             firstName = firstName,
                             lastName = lastName,
-                            email = email,
                             userName = userName,
                             career = career,
                             description = description,
@@ -263,7 +261,7 @@ class EditUserFragment : Fragment() {
 
     fun validation(): Boolean {
         var isValid = true
-        if(binding.editTextAge.text.toString().toInt() < 18){
+        if(binding.editTextAge.text.isNotEmpty() && binding.editTextAge.text.toString().toInt() < 18){
             isValid = false
             toast("Debes ser mayor de edad")
         }
@@ -281,23 +279,17 @@ class EditUserFragment : Fragment() {
             isValid = false
             toast("Inserte nombre de usuario")
         }else{
-            userViewModel.existeUserName(binding.editTextUsername.text.toString(), binding.editTextEmail.text.toString()){state ->
-                if(state is UIState.Success){
-                    if(state.data){
-                        isValid = false
-                        toast("El nombre de usuario ya existe")
-                    }
+            authViewModel.getUserSession {
+                if(it?.userName != binding.editTextUsername.text.toString()){
+                    userViewModel.existeUserName(binding.editTextUsername.text.toString(), it?.id?:"", result = {state ->
+                        if(state is UIState.Success){
+                            if(state.data){
+                                isValid = false
+                                toast("Nombre de usuario ya existe")
+                            }
+                        }
+                    })
                 }
-            }
-        }
-
-        if (binding.editTextEmail.text.isNullOrEmpty()) {
-            isValid = false
-            toast("Inserte correo")
-        } else {
-            if (!binding.editTextEmail.text.toString().isValidEmail()) {
-                isValid = false
-                toast("Correo inválido")
             }
         }
 

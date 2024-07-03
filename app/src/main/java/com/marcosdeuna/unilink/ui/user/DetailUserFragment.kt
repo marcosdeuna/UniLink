@@ -107,7 +107,7 @@ class DetailUserFragment : Fragment() {
                     toast(state.exception)
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
 
@@ -125,7 +125,7 @@ class DetailUserFragment : Fragment() {
                     toast(state.exception)
                 }
 
-                UIState.Empty -> TODO()
+                UIState.Empty -> {}
             }
         }
 

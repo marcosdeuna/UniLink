@@ -147,35 +147,6 @@
         app:layout_constraintTop_toBottomOf="@id/text_last_name_label" />
 
     <TextView
-        android:id="@+id/text_email_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="20dp"
-        android:text="Correo"
-        android:textColor="@color/rojo1"
-        android:textStyle="bold"
-        android:textSize="14dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_career" />
-
-    <EditText
-        android:id="@+id/edit_text_email"
-        android:layout_width="378dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        style="@style/CustomEditTextStyle"
-        android:hint="Correo"
-        android:inputType="textEmailAddress"
-        android:textColor="@color/black"
-        android:textSize="14dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_email_label" />
-
-    <TextView
         android:id="@+id/text_career_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -244,7 +215,7 @@
             android:textStyle="bold"
             android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_text_email" />
+            app:layout_constraintTop_toBottomOf="@id/edit_text_career" />
 
         <EditText
             android:id="@+id/edit_text_description"
