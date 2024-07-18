@@ -7,7 +7,6 @@ data class User (
     val userName : String = "",
     val career : String = "",
     val email : String = "",
-    val password : String = "",
     val profilePicture : String = "",
     val socialPictures: List<String> = emptyList(),
     val description: String = "",

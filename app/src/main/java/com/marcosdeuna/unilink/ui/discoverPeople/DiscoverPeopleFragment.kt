@@ -32,7 +32,6 @@ import com.marcosdeuna.unilink.data.model.Group
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.FragmentDiscoverPeopleBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
-import com.marcosdeuna.unilink.ui.auth.RegisterFragment
 import com.marcosdeuna.unilink.ui.post.ListPostAdapter
 import com.marcosdeuna.unilink.ui.post.PostViewModel
 import com.marcosdeuna.unilink.ui.user.GroupViewModel
@@ -520,6 +519,24 @@ class DiscoverPeopleFragment : Fragment() {
             binding.groupModal.visibility = View.VISIBLE
             binding.createGroupButton.visibility = View.VISIBLE
             binding.updateGroupButton.visibility = View.GONE
+            binding.groupName.setText("")
+            binding.groupDescription.setText("")
+            selectedUsers = arrayListOf()
+            binding.recyclerViewUsers.adapter = UserListAdapter(
+                requireContext(),
+                list,
+                mapOf(),
+                selectedUsers,
+                true,
+                onItemClicked = { _, _ ->
+                },
+                authViewModel
+            )
+            imagesloaded = false
+            selectedImagesUris.clear()
+            binding.imagePreviewContainer.visibility = View.GONE
+            binding.buttonAddImages.setImageDrawable(resources.getDrawable(R.drawable.addpicture, null))
+            binding.buttonDeleteImages.visibility = View.GONE
         }
 
         binding.closeGroupButton.setOnClickListener {

@@ -9,17 +9,11 @@ import com.bumptech.glide.Glide
 import android.content.Context
 import android.widget.ImageView
 import com.marcosdeuna.unilink.data.model.Group
-import com.marcosdeuna.unilink.data.model.Post
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.DialogUserDetailsBinding
 import com.marcosdeuna.unilink.databinding.ItemUserLayoutBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import com.marcosdeuna.unilink.ui.user.UserListAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 
 
 class DiscoverGroupAdapter(val context: Context, val list: ArrayList<Group>, val authViewModel: AuthViewModel, val onSendClicked: (Int, User) -> Unit, val onItemClicked: (Int, User) -> Unit,
@@ -154,10 +148,14 @@ val onEditClicked: (Int, Group) -> Unit, val onDeleteClicked: (Int, Group)-> Uni
                 // Check if all members are loaded
                 if (loadedMemberCount == group.members.size) {
                     // All members are loaded, set up RecyclerView adapter
-                    dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, mapOf(), arrayListOf(), false, onItemClicked = { position, user ->
-                        onItemClicked(position, user)
-                        dialogBinding.closeButton.performClick()
-                    }, authViewModel)
+                    if(user?.id == group.admin) {
+                        dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, mapOf(), arrayListOf(), true, null, authViewModel)
+                    }else{
+                        dialogBinding.recyclerViewUsers.adapter = UserListAdapter(context, members, mapOf(), arrayListOf(), false, onItemClicked = { position, user ->
+                            onItemClicked(position, user)
+                            dialogBinding.closeButton.performClick()
+                        }, authViewModel)
+                    }
 
                     // Show the dialog only when all data is ready
                     val dialog = AlertDialog.Builder(context)

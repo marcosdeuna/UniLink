@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
@@ -85,7 +86,23 @@
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:scaleType="center" />
+
+            <!-- Contador de imágenes -->
+
         </ViewFlipper>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/image_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:text="1/1"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="@+id/post_timestamp"
+            app:layout_constraintTop_toBottomOf="@+id/post_images_container" />
 
         <!-- Timestamp del post -->
         <TextView

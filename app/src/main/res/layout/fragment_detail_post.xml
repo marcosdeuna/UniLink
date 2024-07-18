@@ -20,6 +20,51 @@
         android:layout_marginTop="16dp"
         app:tint="@color/rojo1" />
 
+    <LinearLayout
+        android:id="@+id/action_icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp">
+
+        <!-- Botón para enviar mensaje -->
+        <ImageButton
+            android:id="@+id/button_send_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Enviar Mensaje"
+            android:src="@drawable/ic_send"
+            app:tint="@color/rojo1"
+            android:layout_marginStart="8dp" />
+
+        <!-- Botón para eliminar post -->
+        <ImageButton
+            android:id="@+id/button_delete_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Eliminar Post"
+            android:src="@drawable/ic_delete"
+            app:tint="@color/rojo1"
+            android:layout_marginStart="8dp" />
+
+        <!-- Botón para editar post -->
+        <ImageButton
+            android:id="@+id/button_edit_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Editar Post"
+            android:src="@drawable/ic_edit"
+            app:tint="@color/rojo1"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -96,50 +141,23 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/profile_placeholder"
                     android:scaleType="centerCrop"/>
+
+                <!-- Contador de imágenes -->
+
             </ViewFlipper>
 
-            <LinearLayout
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/image_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="20dp">
-
-            <!-- Botón para enviar mensaje -->
-
-                <!--Botón para eliminar post-->
-                <Button
-                    android:id="@+id/button_send_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
-                    android:backgroundTint="@color/rojo1"
-                    android:text="Enviar Mensaje"
-                    android:textColor="@color/white" />
-
-                <Button
-                android:id="@+id/button_delete_post"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/rojo1"
-                android:text="Eliminar Post"
-                android:textColor="@color/white"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp"/>
-
-            <!--Botón para editar post-->
-            <Button
-                android:id="@+id/button_edit_post"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/rojo1"
-                android:text="Editar Post"
-                android:textColor="@color/white"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"/>
-
-            </LinearLayout>
+                android:padding="8dp"
+                android:text="1/1"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+                app:layout_constraintStart_toStartOf="@+id/post_timestamp"
+                app:layout_constraintTop_toBottomOf="@+id/post_images_container" />
 
         </LinearLayout>
     </ScrollView>

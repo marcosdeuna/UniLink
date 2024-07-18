@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:layout_marginTop="20dp"
-        android:text="Publica sobre temas que te interesen\ny comparte con tus amigos."
+        android:text="Publica sobre temas que te interesen\ny comparte y chatea con tus\n amigos."
         android:textColor="@color/rojo1"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

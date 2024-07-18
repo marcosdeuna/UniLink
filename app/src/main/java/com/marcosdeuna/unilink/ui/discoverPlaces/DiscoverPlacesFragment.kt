@@ -684,11 +684,9 @@ class DiscoverPlacesFragment : Fragment(), MapEventsReceiver {
         reviewViewModel.deleteReview.observe(viewLifecycleOwner) {
             when (it) {
                 is UIState.Loading -> {
-                    toast("Deleting review...")
                 }
 
                 is UIState.Success -> {
-                    toast("Review deleted successfully.")
                     reviewViewModel.getReviews()
                 }
 
@@ -736,8 +734,8 @@ class DiscoverPlacesFragment : Fragment(), MapEventsReceiver {
 
     private fun showDeleteConfirmationDialog2(review: Review) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Eliminar review")
-            .setMessage("¿Estás seguro de que deseas eliminar esta review?")
+            .setTitle("Eliminar Reseña")
+            .setMessage("¿Estás seguro de que deseas eliminar esta reseña?")
             .setPositiveButton("Sí") { dialog, _ ->
                 reviewViewModel.deleteReview(review)
                 dialog.dismiss()

@@ -197,6 +197,7 @@ class CalendarFragment : Fragment() {
                 } else {
                     if (newEvent != null) {
                         calendarViewModel.updateEvent(newEvent)
+                        cancelNotification(event)
                     }
                 }
 

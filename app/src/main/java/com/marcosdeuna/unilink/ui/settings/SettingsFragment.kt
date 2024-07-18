@@ -1,13 +1,17 @@
 package com.marcosdeuna.unilink.ui.settings
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -17,6 +21,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
 import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.data.model.User
@@ -30,6 +36,7 @@ import com.marcosdeuna.unilink.ui.post.PostViewModel
 import com.marcosdeuna.unilink.ui.user.GroupViewModel
 import com.marcosdeuna.unilink.ui.user.UserViewModel
 import com.marcosdeuna.unilink.util.UIState
+import com.marcosdeuna.unilink.util.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -173,6 +180,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                     .setMessage(result.data)
                                     .setPositiveButton("OK", null)
                                     .show()
+                                showEmailVerificationDialog(FirebaseAuth.getInstance().currentUser)
                             }
                             is UIState.Error -> {
                                 showErrorDialog(result.exception ?: "Error al actualizar el correo electrónico")
@@ -211,7 +219,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         authViewModel.updatePassword(currentPassword, newPassword) { result ->
                             when (result) {
                                 is UIState.Success -> {
-                                    userViewModel.updateUserInfo(currentUser?.copy(password = newPassword) ?: currentUser!!)
                                     MaterialAlertDialogBuilder(requireContext())
                                         .setTitle("Éxito")
                                         .setMessage(result.data)
@@ -238,6 +245,44 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .setNegativeButton("Cancelar", null)
             .show()
     }
+
+    private fun showEmailVerificationDialog(user: FirebaseUser?) {
+        user ?: return
+
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_email_verification, null)
+        val textViewMessage = dialogView.findViewById<TextView>(R.id.textViewMessage)
+        textViewMessage.text = "Por favor, verifica tu correo electrónico. Hemos enviado un enlace de verificación a ${user.email}."
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialogView.findViewById<Button>(R.id.buttonResend).setOnClickListener {
+            user.sendEmailVerification().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    toast("Correo de verificación reenviado")
+                } else {
+                    toast("Error al enviar el correo de verificación")
+                }
+            }
+        }
+
+        dialogView.findViewById<Button>(R.id.buttonVerify).setOnClickListener {
+            FirebaseAuth.getInstance().currentUser?.reload()?.addOnCompleteListener { task ->
+                if (task.isSuccessful && user.isEmailVerified) {
+                    toast("Correo verificado exitosamente")
+                    alertDialog.dismiss()
+
+                } else {
+                    toast("El correo aún no ha sido verificado")
+                    showEmailVerificationDialog(user)
+                }
+            }
+        }
+
+        alertDialog.show()
+    }
+
 
 
     private fun requestPermission(permission: String) {

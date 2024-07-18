@@ -132,6 +132,9 @@
         <action
             android:id="@+id/action_detailPostFragment_to_createPostFragment"
             app:destination="@id/createPostFragment" />
+        <action
+            android:id="@+id/action_detailPostFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailUserFragment"

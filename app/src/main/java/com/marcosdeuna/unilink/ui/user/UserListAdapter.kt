@@ -17,7 +17,7 @@ class UserListAdapter(
     val lastMessage: Map<String, String>,
     val selectedUsers: ArrayList<String>,
     val b: Boolean,
-    val onItemClicked: (Int, User) -> Unit,
+    val onItemClicked: ((Int, User) -> Unit)?,
     val authViewModel: AuthViewModel
 ): RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
     inner class UserViewHolder (val binding: ItemUserListBinding): RecyclerView.ViewHolder(binding.root)
@@ -82,7 +82,7 @@ class UserListAdapter(
         }
 
         holder.binding.root.setOnClickListener{
-            onItemClicked(position, currentUser)
+            onItemClicked?.let { it1 -> it1(position, currentUser) }
         }
 
     }

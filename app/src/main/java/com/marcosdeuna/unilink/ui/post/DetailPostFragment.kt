@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.ViewFlipper
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.marcosdeuna.unilink.R
@@ -69,8 +71,10 @@ class DetailPostFragment : Fragment() {
 
         if(post?.images?.isEmpty() == true) {
             binding.imageContainer.visibility = View.GONE
+            binding.imageCounter.visibility = View.GONE
         }else{
             binding.imageContainer.visibility = View.VISIBLE
+            binding.imageCounter.visibility = View.VISIBLE
             post?.images?.let { loadImages(it) }
         }
 
@@ -92,6 +96,17 @@ class DetailPostFragment : Fragment() {
             findNavController().navigate(R.id.action_detailPostFragment_to_postFragment)
         }
 
+        binding.buttonSendMessage.setOnClickListener{
+
+            findNavController().navigate(R.id.action_detailPostFragment_to_messageFragment, Bundle().apply {
+                if (post != null) {
+                    putString("receiverId", post.userId)
+                }
+                putParcelable("post", post)
+            })
+        }
+
+
         binding.imageContainer.setOnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
                 android.view.MotionEvent.ACTION_DOWN -> {
@@ -103,11 +118,20 @@ class DetailPostFragment : Fragment() {
                     } else {
                         binding.imageContainer.showPrevious()
                     }
+                    updateImageCounter(binding.imageContainer, binding.imageCounter)
+
                 }
             }
             true
         }
     }
+
+    private fun updateImageCounter(viewFlipper: ViewFlipper, imageCounter: TextView) {
+        val totalImages = viewFlipper.childCount
+        val currentIndex = viewFlipper.displayedChild + 1
+        imageCounter.text = "$currentIndex/$totalImages"
+    }
+
 
     private fun loadImages(imageUrls: List<String>) {
         binding.imageContainer.removeAllViews()
@@ -119,6 +143,7 @@ class DetailPostFragment : Fragment() {
                     val imageView = createImageView(it)
                     binding.imageContainer.addView(imageView)
                 }
+                updateImageCounter(binding.imageContainer, binding.imageCounter)
             }
         }
     }

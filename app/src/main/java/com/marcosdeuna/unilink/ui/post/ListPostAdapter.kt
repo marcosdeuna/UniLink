@@ -6,8 +6,11 @@ import android.graphics.BitmapFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.marcosdeuna.unilink.data.model.Post
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.ViewFlipper
 import com.marcosdeuna.unilink.databinding.ItemNoteLayoutBinding
 import com.marcosdeuna.unilink.ui.auth.AuthViewModel
 import com.marcosdeuna.unilink.util.hide
@@ -130,11 +133,15 @@ class ListPostAdapter (
                     career.split(" ").forEach {
                         if(!contained || !it.contains("Grado", ) || !it.contains("Ciclo") || !it.contains("Doble") || !it.contains("en") || !it.contains("y") || !it.contains("de") || !it.contains("del") || !it.contains("master")){
                             if (user?.career.toString().contains(it)) {
-                                filteredPosts.add(post)
-                                contained = true
+                                if(!contained) {
+                                    filteredPosts.add(post)
+                                    contained = true
+                                }
                             } else {
-                                nonFilteredPosts.add(post)
-                                contained = true
+                                if (!contained) {
+                                    nonFilteredPosts.add(post)
+                                    contained = true
+                                }
                             }
                         }
                     }
@@ -195,8 +202,10 @@ class ListPostAdapter (
             binding.postTimestamp.setText(item.timestamp?.let { dateFormatted(it) })
             if (item.images.isEmpty()) {
                 binding.postImagesContainer.visibility = android.view.View.GONE
+                binding.imageCounter.visibility = android.view.View.GONE
             } else {
                 binding.postImagesContainer.visibility = android.view.View.VISIBLE
+                binding.imageCounter.visibility = android.view.View.VISIBLE
                 loadImages(item.images)
             }
             binding.root.setOnClickListener {
@@ -224,10 +233,17 @@ class ListPostAdapter (
                         } else {
                             binding.postImagesContainer.showPrevious()
                         }
+                        updateImageCounter(binding.postImagesContainer, binding.imageCounter)
                     }
                 }
                 true
             }
+        }
+
+        private fun updateImageCounter(viewFlipper: ViewFlipper, imageCounter: TextView) {
+            val totalImages = viewFlipper.childCount
+            val currentIndex = viewFlipper.displayedChild + 1
+            imageCounter.text = "$currentIndex/$totalImages"
         }
 
         private fun loadImages(imageUrls: List<String>) {
@@ -243,6 +259,7 @@ class ListPostAdapter (
                         withContext(Dispatchers.Main) {
                             binding.postImagesContainer.addView(imageView)
                         }
+                        updateImageCounter(binding.postImagesContainer, binding.imageCounter)
                     }
                 }
             }

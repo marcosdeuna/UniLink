@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/textViewMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Por favor, verifica tu correo electrónico. Hemos enviado un enlace de verificación."
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingBottom="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="3">
+
+        <Button
+            android:id="@+id/buttonResend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/rojo1"
+            android:backgroundTint="@color/transparente"
+            android:text="Reenviar Correo" />
+
+        <Button
+            android:id="@+id/buttonVerify"
+            android:backgroundTint="@color/transparente"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/rojo1"
+            android:text="Verificar Ahora" />
+
+    </LinearLayout>
+</LinearLayout>

@@ -2,6 +2,7 @@ package com.marcosdeuna.unilink.ui.auth
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,11 +15,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.marcosdeuna.unilink.R
 import com.marcosdeuna.unilink.data.model.User
 import com.marcosdeuna.unilink.databinding.FragmentRegisterBinding
@@ -179,7 +184,12 @@ class RegisterFragment : Fragment() {
                     binding.progressBar.hide()
                     binding.buttonRegister.text = "Register"
                     toast(state.data)
-                    findNavController().navigate(R.id.action_registerFragment_to_postFragment)
+                    val currentUser = FirebaseAuth.getInstance().currentUser
+                    if (currentUser?.isEmailVerified == true) {
+                        findNavController().navigate(R.id.action_registerFragment_to_postFragment)
+                    } else {
+                        showEmailVerificationDialog(currentUser)
+                    }
                 }
                 is UIState.Error -> {
                     binding.progressBar.hide()
@@ -191,6 +201,43 @@ class RegisterFragment : Fragment() {
             }
         }
     }
+    private fun showEmailVerificationDialog(user: FirebaseUser?) {
+        user ?: return
+
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_email_verification, null)
+        val textViewMessage = dialogView.findViewById<TextView>(R.id.textViewMessage)
+        textViewMessage.text = "Por favor, verifica tu correo electrónico. Hemos enviado un enlace de verificación a ${user.email}."
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialogView.findViewById<Button>(R.id.buttonResend).setOnClickListener {
+            user.sendEmailVerification().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    toast("Correo de verificación reenviado")
+                } else {
+                    toast("Error al enviar el correo de verificación")
+                }
+            }
+        }
+
+        dialogView.findViewById<Button>(R.id.buttonVerify).setOnClickListener {
+            FirebaseAuth.getInstance().currentUser?.reload()?.addOnCompleteListener { task ->
+                if (task.isSuccessful && user.isEmailVerified) {
+                    toast("Correo verificado exitosamente")
+                    alertDialog.dismiss()
+                    findNavController().navigate(R.id.action_registerFragment_to_postFragment)
+
+                } else {
+                    toast("El correo aún no ha sido verificado")
+                    showEmailVerificationDialog(user)
+                }
+            }
+        }
+
+        alertDialog.show()
+    }
 
     fun getUserObject(): User {
         return User(
@@ -199,7 +246,6 @@ class RegisterFragment : Fragment() {
             lastName = binding.editTextLastName.text.toString(),
             userName = binding.editTextUsername.text.toString(),
             email = binding.editTextEmail.text.toString(),
-            password = binding.editTextPassword.text.toString(),
             profilePicture = binding.profileImage.toString(),
             career = binding.editTextCareer.text.toString(),
         )
